@@ -1,0 +1,65 @@
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+
+<nav class="header">
+  <img src="/assets/soundVIbe.png" alt="SoundVibe Logo" class="logo">
+</nav>
+
+<div class="Welcome">
+  <h2 class="form-title">Welcome To <p>Sound<span style="color: #8B53FA;">Vibe</span></p> </h2>
+</div>
+
+<form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
+  
+  <div>
+    <label for="username">Username</label>
+    <input id="username" formControlName="username" type="text" />
+    <div *ngIf="signUpForm.get('username')?.invalid && signUpForm.get('username')?.touched">
+      Username is required and must be at least 3 characters.
+    </div>
+  </div>
+
+  <div>
+    <label for="email">Email</label>
+    <input id="email" formControlName="email" type="email" />
+    <div *ngIf="signUpForm.get('email')?.invalid && signUpForm.get('email')?.touched">
+      Please enter a valid email.
+    </div>
+  </div>
+
+  <div>
+    <label for="password">Password</label>
+    <input id="password" formControlName="password" type="password" />
+    <div *ngIf="signUpForm.get('password')?.invalid && signUpForm.get('password')?.touched">
+      Password must be at least 6 characters.
+    </div>
+  </div>
+
+  <div>
+    <label for="confirmPassword">Confirm Password</label>
+    <input id="confirmPassword" formControlName="confirmPassword" type="password" />
+    <div *ngIf="signUpForm.hasError('mismatch')">
+      Passwords do not match.
+    </div>
+  </div>
+
+  <div>
+    <label for="age">Age</label>
+    <input id="age" formControlName="age" type="number" />
+    <div *ngIf="signUpForm.get('age')?.invalid && signUpForm.get('age')?.touched">
+      Age must be at least 18.
+    </div>
+  </div>
+
+  <button type="submit" [disabled]="signUpForm.invalid">Sign Up</button>
+
+  <div *ngIf="errorMessage" class="error">
+    {{ errorMessage }}
+  </div>
+</form>
+
+<div class="account-footer">
+  <p>Already have an account? <a routerLink="/login">Log in</a>
+  </p>
+</div>

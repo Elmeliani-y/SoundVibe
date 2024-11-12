@@ -1,0 +1,7 @@
+body {
+    background-color: rgb(31, 29, 29); /* Black background for the whole page */
+    color: white;             /* White text for contrast */
+    margin: 0;                /* Remove default margins */
+    padding: 0;               /* Remove default padding */
+    font-family: Arial, sans-serif;  /* Set a default font */
+}

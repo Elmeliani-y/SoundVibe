@@ -1,0 +1,137 @@
+
+.header {
+    display: flex;
+    height: 75px;            
+    margin: 0;               
+    padding: 0;  
+    border-bottom: 0.5px solid #a7a4a4; 
+    justify-content:flex-start;
+    align-items:center
+         
+}
+
+.logo {
+    width: 150px;  
+    height: 130px;
+    margin-top: 20px;
+
+}
+
+/* Style the form container */
+form {
+    width: 100%;
+    max-width: 400px;
+    margin: 2rem auto;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-title {
+    font-size: 3rem;
+    font-weight:bolder;
+    color: white;  
+    text-align: center;
+    font-family: 'Kanit', sans-serif; 
+
+}
+
+label {
+    margin-bottom: 0.1rem;
+    display: block;
+    color: #ddd;
+    font-family: 'Kanit', sans-serif; 
+    font-size: 1rem;
+
+
+}
+
+input {
+    width: 100%;
+    padding: 0.70rem;
+    height: 10px; 
+    margin-bottom: 1rem;
+    border: 1px solid rgb(73, 70, 70);
+    border-radius: 6px;
+    font-size: 1rem;
+    background-color: rgb(73, 70, 70);
+}
+
+input:focus {
+    border-color: #cb6ce6;
+    outline: none;
+}
+
+button {
+    width: 106%;
+    padding: 0.05rem;
+    height: 35px; 
+    margin-top: 0.9rem;
+    background-color: #824575;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-family: 'Kanit', sans-serif; 
+
+}
+
+button:disabled {
+    background-color: #824575;
+}
+
+button:hover:not(:disabled) {
+    background-color: #cb6ce6;
+}
+
+/* Error messages */
+div div {
+    color: red;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.error {
+    margin-top: 1rem;
+    color: red;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Reminder section for Sign up and Forgot password */
+.reminder {
+    margin-top: 1rem;
+    font-size: 0.75rem;
+    text-align:left;
+    display: flex;
+    gap: 10px
+}
+.reminder p {
+    margin: 0; 
+
+}
+
+.reminder a {
+    color: white;
+    text-decoration: none;
+    
+    
+}
+
+
+
+.reminder p + a {
+    margin-left: 1px;
+}
+
+p .sign-up-link{
+    color: #824575; font-weight: bold; font-size:larger;    text-decoration: none; 
+    font-size: 1rem;
+}
+p .sign-up-link:hover {
+    color: #d4679d; 
+    cursor: pointer;
+  }
+  
+

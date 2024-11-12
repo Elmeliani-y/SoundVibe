@@ -1,0 +1,130 @@
+/* Existing styles */
+
+.header {
+    display: flex;
+    height: 75px;            
+    margin: 0;               
+    padding: 0;  
+    border-bottom: 0.5px solid #a7a4a4; 
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.logo {
+    width: 150px;  
+    height: 130px;
+    margin-top: 20px;
+}
+
+form {
+    width: 100%;
+    max-width: 400px;
+    margin: 2rem auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.Welcome {
+    text-align: center;
+    font-family: 'Kanit', sans-serif;
+}
+
+.form-title {
+    font-size: 3rem;
+    font-weight: bolder;
+    color: white;
+    font-family: 'Kanit', sans-serif;
+    text-align: left;
+    display: inline-block;
+}
+
+.form-title p {
+    color: #db87f5;
+    margin-top: 1px;
+    margin-left: 10px;
+    display: inline;
+    font-family: 'Kanit', sans-serif;
+}
+
+label {
+    margin-bottom: 0.2rem;
+    display: block;
+    color: #d4d2d2;
+    font-family: 'Kanit', sans-serif;
+    font-size: 1rem;
+}
+
+input {
+    width: 100%;
+    padding: 0.70rem;
+    height: 10px;
+    margin-bottom: 1rem;
+    border: 1px solid rgb(73, 70, 70);
+    border-radius: 6px;
+    font-size: 1rem;
+    background-color: rgb(73, 70, 70);
+}
+
+input:focus {
+    border-color: #cb6ce6;
+    outline: none;
+}
+
+button {
+    width: 106%;
+    padding: 0.05rem;
+    height: 35px;
+    margin-top: 0.9rem;
+    background-color: #824575;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-family: 'Kanit', sans-serif;
+}
+
+button:disabled {
+    background-color: #824575;
+}
+
+button:hover:not(:disabled) {
+    background-color: #db87f5;
+}
+
+/* Error messages */
+div div {
+    color: red;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.error {
+    margin-top: 1rem;
+    color: red;
+    font-weight: bold;
+    text-align: center;
+}
+
+.welcome a {
+    text-decoration: none;
+}
+
+.account-footer {
+    text-align: center;
+    font-family: 'Kanit', sans-serif;
+    font-size: 1rem;
+    color: #ddd;
+    bottom: 20px;
+    width: 100%;
+}
+
+.account-footer a{
+    font-family: 'Kanit', sans-serif;
+text-decoration: none; color: #824575; font-weight: bold; font-size: larger;
+}
+.account-footer a:hover {
+    color: #d4679d;
+    cursor: pointer;
+}
