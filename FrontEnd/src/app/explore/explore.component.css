@@ -1,0 +1,16 @@
+/* explore.component.css */
+
+:host {
+    display: flex;
+    flex-direction: row;
+  }
+  
+  app-sidebar-component {
+    width: 250px;
+  }
+  
+  .main-content {
+    flex-grow: 1;
+    padding: 20px;
+  }
+  
