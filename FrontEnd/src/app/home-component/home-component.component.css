@@ -1,0 +1,28 @@
+.auth-buttons {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .btn {
+    padding: 10px 20px;
+    margin: 5px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .btn-login {
+    background-color: #6c757d;
+    color: white;
+  }
+  
+  .btn-signup {
+    background-color: #8b53fa;
+    color: white;
+  }
+  
+  .btn:hover {
+    opacity: 0.9;
+  }
+  

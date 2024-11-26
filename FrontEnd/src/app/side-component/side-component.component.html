@@ -1,0 +1,19 @@
+<link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Tajawal:wght@200;300;400;500;700;800;900&display=swap" rel="stylesheet">
+
+<div class="sidebar">
+    <div class="side-header">
+        <a routerLink="/" class="logo"><img src="assets/logo.png" alt="logo" class="image"></a>
+    </div>
+    <div class="features">
+        <ul>
+            <li><a routerLink="/albums" class="lien"><i class='bx bx-home' style="color:#C969E6;font-size:27px;padding-right: 15px;"></i>Home</a></li>
+            <li><a routerLink="/explore" class="lien"><i class='bx bx-compass' style="color:#db87f5;font-size:27px;padding-right: 15px;"></i>Explore</a></li>
+        </ul>
+    </div>
+    <div class="line"></div>
+    <div class="playlist">
+        <a routerLink="/playlists" class="play">Playlists</a>
+        <a class="plus" (click)="openAddPlaylistDialog()"><i class='bx bx-plus' style="color:#C969E6;font-size:30px;font-weight: 400;"></i></a>
+    </div>
+</div>
