@@ -38,8 +38,8 @@ app.post('/signup', upload.single('profilePic'), async (req, res) => {
             username,
             email,
             password: hashedPassword,
-            profilePic, // Add profilePic to the user object
-            musicStyle  // Add musicStyle to the user object
+            profilePic,
+            musicStyle
         });
 
         await user.save();
@@ -89,8 +89,8 @@ app.get('/profile', verifyJWT, (req, res) => {
         user: {
             name: req.user.name,
             email: req.user.email,
-            profilePic: req.user.profilePic, // Include profilePic in the response
-            musicStyle: req.user.musicStyle  // Include musicStyle in the response
+            profilePic: req.user.profilePic,
+            musicStyle: req.user.musicStyle
         }
     });
 });
