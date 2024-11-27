@@ -21,7 +21,25 @@ app.use(
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
-
+app.put('/update', verifyJWT, upload.single('profilePic'), async (req, res) =>
+{
+    const { name, email, musicStyle } = req.body;
+    const profilePic = req.file ? req.file.buffer : null;
+    try {
+        const user = await userModel.findOne({ email: req.user.email });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        user.name = name;
+        user.email = email;
+        user.musicStyle = musicStyle;
+        user.profilePic = profilePic;
+        await user.save();
+        res.json({ message: 'User updated successfully' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
 app.post('/signup', upload.single('profilePic'), async (req, res) => {
     const { name, username, email, password, musicStyle } = req.body;
     const profilePic = req.file ? req.file.buffer : null;
@@ -50,6 +68,71 @@ app.post('/signup', upload.single('profilePic'), async (req, res) => {
     }
 });
 
+
+app.post(`/artists/:artistid/favorite`, verifyJWT, async (req, res) => {
+    const { artistid } = req.params;
+    try {
+        const user = await userModel.findOne({ email: req.user.email });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        if (!user.favoriteArtists.includes(artistid)) {
+            user.favoriteArtists.push(artistid);
+            await user.save();
+        }
+        res.json({ message: 'Artist added to favorites' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+app.post(`/artists/:artistid/unfavorite`, verifyJWT, async (req, res) => {
+    const { artistid } = req.params;
+    try {
+        const user = await userModel.findOne({ email: req.user.email });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        if (user.favoriteArtists.includes(artistid)) {
+            user.favoriteArtists = user.favoriteArtists.filter(id => id !== artistid);
+            await user.save();
+        }
+        res.json({ message: 'Artist removed from favorites' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+app.post(`/playlists/:playlistid/like`, verifyJWT, async (req, res) => {
+    const { playlistid } = req.params;
+    try {
+        const user = await userModel.findOne({ email: req.user.email });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        if (!user.likedPlaylists.includes(playlistid)) {
+            user.likedPlaylists.push(playlistid);
+            await user.save();
+        }
+        res.json({ message: 'Playlist liked' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+app.post(`/playlists/:playlistid/unlike`, verifyJWT, async (req, res) => {
+    const { playlistid } = req.params;
+    try {
+        const user = await userModel.findOne({ email: req.user.email });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        if (user.likedPlaylists.includes(playlistid)) {
+            user.likedPlaylists = user.likedPlaylists.filter(id => id !== playlistid);
+            await user.save();
+        }
+        res.json({ message: 'Playlist unliked' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
