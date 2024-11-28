@@ -7,7 +7,7 @@ import {SideComponentComponent} from "../side-component/side-component.component
 @Component({
   selector: 'app-home-component',
   standalone: true,
-  imports: [NavbarComponent, SideComponentComponent, CommonModule],
+  imports: [ SideComponentComponent, CommonModule],
   templateUrl: './home-component.component.html',
   styleUrl: './home-component.component.css'
 })

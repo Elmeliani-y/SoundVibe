@@ -89,3 +89,23 @@ ul li {
     margin-left: 120px;
    
 }
+.ply {
+    background-color: #2a2a2a;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    margin-top: 20px;
+    text-align: center;
+}
+
+.ply h4 {
+    font-size: 18px;
+    color: #C969E6;
+    margin-bottom: 10px;
+}
+
+.ply p {
+    font-size: 14px;
+    color: #bbb;
+    line-height: 1.5;
+}
