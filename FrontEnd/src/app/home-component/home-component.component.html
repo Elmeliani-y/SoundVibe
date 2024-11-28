@@ -1,9 +1,22 @@
-<app-navbar></app-navbar>
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<nav class="auth-buttons">  
+  <div class="navbar">
+    <div class="searchbar">
+        <input type="text" class="search" placeholder="Artistes, titres, podcasts...">
+        <button type="button" class="button">
+            <i class='bx bx-search-alt-2'></i>
+        </button>
+        <button routerLink="/login" class="btn btn-login">Login</button>
+    <button routerLink="/sign-up" class="btn btn-signup">Sign Up</button>
+    </div>
+</div>
 
-<div *ngIf="" class="auth-buttons">
-    <button routerLink="/login" class="btn btn-login">Login</button>
-    <button routerLink="/signup" class="btn btn-signup">Sign Up</button>
-  </div>
+
+
+</nav>
+
 
 <app-side-component></app-side-component>
 

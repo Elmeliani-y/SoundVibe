@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NavbarComponent } from '../navbar/navbar.component';
-import { SideComponentComponent } from "../side-component/side-component.component";
 import { CommonModule } from '@angular/common';
+import {SideComponentComponent} from "../side-component/side-component.component";
 
 
 @Component({
