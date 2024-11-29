@@ -1,26 +1,46 @@
-/* explore.component.css */
+.auth-buttons {
+  border-bottom: 1px solid #ccc;
+  height: 80px;
+    
 
-:host {
-    display: flex;
-    flex-direction: row;
   }
   
-  app-sidebar-component {
-    width: 250px;
+  .btn {
+    text-align:right;
+    padding: 10px 20px;
+    margin: 10px;
+    border: none;
+    border-radius: 4px;
+    font-size: 15px;
+    cursor: pointer;
+    font-family: 'Kanit', sans-serif; 
   }
   
-  .main-content {
-    flex-grow: 1;
-    padding: 20px;
+  .btn-login {
+    background-color:  #824575;
+    color: white;
+    margin-left: 400px;
+    border-color: #cccccc;
+    border-radius: 15px;
+
+  }
+  
+  .btn-signup {
+    background-color: #8b53fa;
+    color: white;
+    border-radius: 15px;
+
+  }
+  
+  .btn:hover {
+    opacity: 0.9;
   }
   .navbar {
     background-color: #0F0C12;
-    height: 50px;
-   border-bottom: 1px solid #ccc;
-  height: 90px;
+    height: 50px; 
   
   }
- 
+  
   .searchbar {
     position: fixed;
     width: 100%;
@@ -85,5 +105,4 @@
     background-color: rgb(90, 89, 89);
     margin: 20px 0;
   }
-  
   
