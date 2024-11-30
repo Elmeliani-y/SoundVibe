@@ -2,13 +2,16 @@ const express = require('express');
 const session = require('express-session');
 const dotenv = require('dotenv');
 const axios = require('axios');
-const verifyJWT = require("../User/middlewear/index")
+const verifyJWT = require("../User/middlewear/index");
+
+const cors = require('cors');
 
 
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT2;
+app.use(cors());
+const PORT = process.env.PORT2 || 3001;
 const JAMENDO_API_URL = 'https://api.jamendo.com/v3.0';
 
 app.use(express.json());
