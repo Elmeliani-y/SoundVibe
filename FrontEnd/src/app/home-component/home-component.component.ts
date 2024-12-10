@@ -3,35 +3,50 @@ import { MusicService } from '../services/music.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SideComponentComponent } from "../side-component/side-component.component";
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-home-component',
   standalone: true,
-  imports: [SideComponentComponent, CommonModule, FormsModule],
+  imports: [SideComponentComponent, CommonModule, FormsModule,HttpClientModule],
   templateUrl: './home-component.component.html',
   styleUrls: ['./home-component.component.css'],
   providers: [MusicService]
 })
 export class HomeComponentComponent implements OnInit {
-  searchQuery: string = '';  
-  tracks: any[] = [];        
-  artists: any[] = [];       
+  tracks: any[] = [];
+  searchQuery: string = '';
 
   constructor(private musicService: MusicService) {}
 
   ngOnInit(): void {
-    this.searchQuery = ''; 
-    this.searchTracks();      
+    this.loadTracks();
   }
 
- 
-  async searchTracks(): Promise<void> {
-    try {
-      const data = await this.musicService.searchTracks(this.searchQuery);
-      this.tracks = data.results; 
-      this.artists = data.artists || []; 
-    } catch (error) {
-      console.error('Error fetching tracks:', error);
+  loadTracks(): void {
+    this.musicService.getAllTracks().subscribe(
+      (data) => {
+        this.tracks = data.results || [];
+      },
+      (error) => {
+        console.error('Error loading tracks', error);
+      }
+    );
+  }
+
+  searchTrackByName(): void {
+    if (this.searchQuery.trim() === '') {
+      this.loadTracks(); // Reload all tracks if search query is empty
+      return;
     }
+
+    this.musicService.searchTracks(this.searchQuery).subscribe(
+      (data) => {
+        this.tracks = data.results || [];
+      },
+      (error) => {
+        console.error('Error searching tracks', error);
+      }
+    );
   }
 }

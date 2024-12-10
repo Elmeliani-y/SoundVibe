@@ -1,35 +1,20 @@
 import { Injectable } from '@angular/core';
-import axios from 'axios';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class MusicService {
-  private baseURL: string = 'http://localhost:3001'; 
+  private API_URL = 'http://localhost:3001/music';
 
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
-  //search 
-  async searchTracks(query: string): Promise<any> {
-    try {
-      const response = await axios.get(`${this.baseURL}/music/all`, {
-        params: { query },
-      });
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching tracks:', error);
-      throw error; 
-    }
+  getAllTracks(): Observable<any> {
+    return this.http.get(`${this.API_URL}/all`);
   }
 
-  // for search bar by track's name
-  async searchTrackByName(name: string): Promise<any> {
-    try {
-      const response = await axios.get(`${this.baseURL}/music/search/${name}`);
-      return response.data; 
-    } catch (error) {
-      console.error('Error fetching track by name:', error);
-      throw error; 
-    }
+  searchTracks(name: string): Observable<any> {
+    return this.http.get(`${this.API_URL}/search/${name}`);
   }
 }
