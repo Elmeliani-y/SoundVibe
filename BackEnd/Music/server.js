@@ -11,16 +11,15 @@ dotenv.config();
 
 const app = express();
 app.use(cors());
-const PORT = process.env.PORT2 || 3001;
-const JAMENDO_API_URL = 'https://api.jamendo.com/v3.0';
+const PORT = 3001;
 
 app.use(express.json());
 app.get('/music/all', async (req, res) => {
     const { query } = req.query;
     try {
-        const response = await axios.get(`${JAMENDO_API_URL}/tracks`, {
+        const response = await axios.get('https://api.jamendo.com/v3.0/tracks', {
             params: {
-                client_id: process.env.JAMENDO_CLIENT_ID,
+                client_id: 'a72fb851',
                 format: 'json',
                 limit: 10,
                 search: query

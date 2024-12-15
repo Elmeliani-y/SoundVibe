@@ -8,7 +8,7 @@ const verifyJWT = require('../User/middlewear/index');
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT5 ;
+const PORT = process.env.PORT5 || 3004 ;
 const JAMENDO_API_URL = 'https://api.jamendo.com/v3.0';
 
 app.use(express.json());
