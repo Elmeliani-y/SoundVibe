@@ -1,0 +1,12 @@
+
+<h2>choose artist</h2>
+
+<div class="artist-list">
+
+    <h1>Artists</h1>
+    <div class="artist-card" *ngFor="let artist of artists">
+      <img [src]="artist.imageUrl" alt="{{ artist.name }}" class="artist-image">
+      <h2>{{ artist.name }}</h2>
+    </div>
+  </div>
+  

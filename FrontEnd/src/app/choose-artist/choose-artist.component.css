@@ -1,0 +1,23 @@
+/* artist-list.component.css */
+
+.artist-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+  }
+  
+  .artist-card {
+    width: 200px;
+    text-align: center;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 10px;
+  }
+  
+  .artist-image {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+  }
+  

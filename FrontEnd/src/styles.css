@@ -5,3 +5,5 @@ body {
     padding: 0;               /* Remove default padding */
     font-family: Arial, sans-serif;  /* Set a default font */
 }
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

@@ -22,6 +22,7 @@
   font-size: 16px;
   font-family: "Roboto", sans-serif;
   padding-left: 35px;  
+  margin-left: 5px;
 }
 
 .search::placeholder {
@@ -29,6 +30,7 @@
   font-size: 15px;
   font-weight: 500;
   font-family: "Roboto", sans-serif;
+  
 }
 
 .search:focus::placeholder {
@@ -57,6 +59,7 @@
 .button i {
   font-size: 20px;
   color: #cccccc;
+  margin-top: 10px;
 }
 
 .button:hover i {

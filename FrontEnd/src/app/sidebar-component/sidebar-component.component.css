@@ -20,10 +20,12 @@
 
 
 .features {
+    
     margin-top: 80px;
+    margin-right: 10px;
     }
 ul li a {
-    color: white;
+    color: #fff;
     font-size: 18px;
     text-decoration: none;
     display: block;
@@ -38,13 +40,13 @@ ul li a {
 
 /* Sidebar icon styling */
 ul li a i {
-    color: #824575;
+    color:#fff;
     font-size: 27px;
     padding-right: 15px;
 }
 
 
-.playlist a {
+/*.playlist a {
     text-decoration: none;
     font-family: "Roboto", sans-serif;
     font-weight: 500;
@@ -52,6 +54,8 @@ ul li a i {
     color: white;
     display: inline-block;
     margin-right: 10px;
+    transition: all 0.3s ease;
+    border-radius: 5px;
 }
 
 
@@ -60,7 +64,7 @@ ul li a i {
     color: #824575;
     font-weight: 400;
     display: inline-block;
-}
+}*/
 
 
 .line {
@@ -85,7 +89,61 @@ ul li {
 .side-hearder {
     margin-bottom: 30px; 
 }
-.plus{
+/*.plus{
     margin-left: 120px;
+    background-color: #1A181F;
+    border: none;
+    margin-bottom: 100px;
    
-}
+}*/
+
+
+
+ul li a i:hover ,ul li a i:focus{
+    background-color: #29282D; 
+    color:#C66BDE ; 
+    border-radius: 9px;}
+    ul li a:hover, ul li a:focus {
+        background-color: #29282D; /* Darker purple background */
+        color: #C66BDE; /* Light purple text */
+        border-radius: 9px;
+    }
+    ul li a:hover i, ul li a:focus i {
+        color: #C66BDE; /* Light purple icon */
+    }
+    .playlist {
+        display: flex; /* Enable flexbox layout */
+        align-items: center; /* Vertically align items in the center */
+        justify-content: flex-start; /* Align items to the left */
+    }
+    
+    .playlist a {
+        text-decoration: none;
+        font-family: "Roboto", sans-serif;
+        font-weight: 500;
+        font-size: 20px;
+        color: white;
+        margin-right: 10px;
+        transition: all 0.3s ease;
+        border-radius: 5px;
+        
+
+    }
+    
+    .playlist .plus {
+        font-size: 30px;
+        color: #824575;
+        font-weight: 400;
+        background-color: transparent; /* Remove background color */
+        border: none; /* Remove border */
+        display: inline-block;
+        cursor: pointer; /* Add pointer cursor on hover */
+        margin-left: 95px;
+    }
+    
+    /* If needed, adjust the margin to position them better */
+    .playlist a,
+    .playlist .plus {
+        margin-right: 10px; /* Adjust spacing between link and button */
+    }
+    
