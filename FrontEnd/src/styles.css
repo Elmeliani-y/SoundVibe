@@ -1,68 +1,95 @@
+/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fugaz+One&family=Ibarra+Real+Nova:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Tajawal:wght@200;300;400;500;700;800;900&display=swap');
+
+/* Reset default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body styles */
 body {
-    background-color: #0F0C12;
-    color: white;             /* White text for contrast */
-    margin: 0;                /* Remove default margins */
-    padding: 0;               /* Remove default padding */
-    font-family: Arial, sans-serif;  /* Set a default font */
-}
-<<<<<<< HEAD
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
-=======
-
-/* Custom Dialog Styles */
-.custom-dialog-container {
-  backdrop-filter: blur(8px);
+    font-family: 'Roboto', sans-serif;
+    background-color: #121212;
+    color: #ffffff;
+    line-height: 1.6;
 }
 
-.custom-dialog-container .mat-mdc-dialog-container {
-  --mdc-dialog-container-color: transparent !important;
+/* Container styles */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
 }
 
-.custom-dialog-container .mat-mdc-dialog-surface {
-  background: transparent !important;
-  overflow: visible !important;
+/* Button styles */
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    background-color: #1DB954;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-.cdk-overlay-pane {
-  position: fixed !important;
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
+.btn:hover {
+    background-color: #1ed760;
 }
 
-/* Custom Snackbar Styles */
-.custom-snackbar {
-  background: #2D2B52 !important;
-  color: white !important;
+/* Input styles */
+.input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #282828;
+    border-radius: 4px;
+    background-color: #282828;
+    color: white;
 }
 
-.custom-snackbar .mdc-snackbar__surface {
-  background-color: #2D2B52 !important;
+.input:focus {
+    outline: none;
+    border-color: #1DB954;
 }
 
-.custom-snackbar .mat-simple-snackbar-action {
-  color: #6C63FF !important;
+/* Card styles */
+.card {
+    background-color: #282828;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
 }
 
-.cdk-overlay-backdrop {
-  backdrop-filter: blur(4px);
-  background: rgba(0, 0, 0, 0.3) !important;
+/* Text styles */
+.text-primary {
+    color: #1DB954;
 }
 
-/* Dialog Animation */
-.mat-mdc-dialog-container {
-  animation: dialogFadeIn 0.2s ease-out;
+.text-secondary {
+    color: #b3b3b3;
 }
 
-@keyframes dialogFadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+/* Loading spinner */
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
 }
->>>>>>> 696cad982252011071a3096a42b4a027730b3502
+
+/* Error message */
+.error-message {
+    color: #ff4444;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Success message */
+.success-message {
+    color: #1DB954;
+    text-align: center;
+    padding: 20px;
+}

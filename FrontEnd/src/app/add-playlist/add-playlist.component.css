@@ -87,6 +87,7 @@
     border: none;
     background-color: #3B383D;
     border-radius: 15px;
+    color: #fff;
 
 }
 .name:focus{
@@ -109,6 +110,7 @@
     padding: 10px;
  border-radius: 15px;
     border: none;
+    color: #fff;
    
   }
   .desc:focus{

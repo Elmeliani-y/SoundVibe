@@ -1,35 +1,194 @@
-
 const express = require('express');
-const axios = require('axios');
 require('dotenv').config();
+const axios = require('axios');
+const cors = require('cors');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 
 const app = express();
-const port = process.env.PORT3 || 3001;
+const port = process.env.PORT4 || 3003;
 
-app.use(express.json());
-
-const JAMENDO_API_URL = 'https://api.jamendo.com/v3.0/artists';
-const JAMENDO_CLIENT_ID = process.env.JAMENDO_CLIENT_ID;
-
-app.get('/artists', async (req, res) => {
-  try {
-    // Get all artists from Jamendo API (pagination might be necessary)
-    const response = await axios.get(JAMENDO_API_URL, {
-      params: { client_id: JAMENDO_CLIENT_ID }
-    });
-    const artists = response.data.results;
-
-    // Sending back the artist data
-    res.json(artists.map(artist => ({
-      name: artist.name,
-      imageUrl: artist.image[2].url, // Get the image URL from Jamendo API
-    })));
-  } catch (error) {
-    console.error('Error fetching artists', error);
-    res.status(500).send('Error fetching artists');
-  }
+// MongoDB connection
+mongoose.connect('mongodb://localhost:27017/soundvibe', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}).then(() => {
+    console.log('Connected to MongoDB');
+}).catch(err => {
+    console.error('MongoDB connection error:', err);
 });
 
+// Create FavArtist Schema
+const favArtistSchema = new mongoose.Schema({
+    userId: { type: String, required: true }, // We'll add user authentication later
+    artists: [{
+        id: String,
+        name: String,
+        image: String,
+        joindate: String,
+        website: String,
+        shorturl: String,
+        shareurl: String
+    }],
+    createdAt: { type: Date, default: Date.now }
+});
+
+const FavArtist = mongoose.model('FavArtist', favArtistSchema);
+
+app.use(cors({
+    origin: 'http://localhost:4200',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type'],
+}));
+
+app.use(bodyParser.json());
+
+const JAMENDO_API_URL = 'https://api.jamendo.com/v3.0';
+const JAMENDO_CLIENT_ID = 'f9409435'; // Using the client ID from your .env file
+
+// Function to add delay between requests
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+// Function to fetch artists with images
+async function fetchArtists() {
+    try {
+        console.log('Fetching 50 artists with images...');
+        const response = await axios.get(`${JAMENDO_API_URL}/artists/`, {
+            params: {
+                client_id: JAMENDO_CLIENT_ID,
+                format: 'json',
+                limit: 50,
+                imagesize: 200, // Request larger images
+                include: 'image',
+                boost: 'popularity_total',
+                orderby: 'popularity_total'
+            }
+        });
+
+        if (!response.data || !response.data.results) {
+            console.error('Invalid response:', response.data);
+            return [];
+        }
+
+        // Map the response to include artist images
+        const artists = response.data.results.map(artist => ({
+            id: artist.id,
+            name: artist.name,
+            image: artist.image || 'assets/person.jpg', // Use default image if none available
+            joindate: artist.joindate,
+            website: artist.website || null,
+            shorturl: artist.shorturl || null,
+            shareurl: artist.shareurl || null
+        }));
+
+        // Remove duplicates based on artist ID
+        const uniqueArtists = Array.from(new Map(artists.map(item => [item.id, item])).values());
+        console.log(`Total unique artists fetched: ${uniqueArtists.length}`);
+        
+        return uniqueArtists;
+
+    } catch (error) {
+        console.error('Error fetching artists:', error.message);
+        if (error.response) {
+            console.error('API Response Error:', {
+                status: error.response.status,
+                statusText: error.response.statusText,
+                data: error.response.data
+            });
+        }
+        throw error;
+    }
+}
+
+// Route to get artists
+app.get('/artists', async (req, res) => {
+    try {
+        const artists = await fetchArtists();
+        if (artists && artists.length > 0) {
+            res.json(artists);
+        } else {
+            console.log('No artists found in the response');
+            res.status(404).json({ 
+                message: 'No artists found',
+                clientId: JAMENDO_CLIENT_ID
+            });
+        }
+    } catch (error) {
+        console.error('Error in /artists endpoint:', error.message);
+        res.status(500).json({ 
+            message: 'Internal Server Error',
+            error: error.message,
+            clientId: JAMENDO_CLIENT_ID
+        });
+    }
+});
+
+// Route to save favorite artists
+app.post('/favartists', async (req, res) => {
+    try {
+        const { artists } = req.body;
+        
+        if (!artists || !Array.isArray(artists)) {
+            return res.status(400).json({ message: 'Invalid artists data' });
+        }
+
+        // For now, using a temporary userId. Later, this should come from authentication
+        const tempUserId = 'temp-user-id';
+
+        // Check if user already has favorite artists
+        let userFavArtists = await FavArtist.findOne({ userId: tempUserId });
+
+        if (userFavArtists) {
+            // Update existing favorites
+            userFavArtists.artists = artists;
+            await userFavArtists.save();
+        } else {
+            // Create new favorites document
+            userFavArtists = new FavArtist({
+                userId: tempUserId,
+                artists: artists
+            });
+            await userFavArtists.save();
+        }
+
+        res.status(201).json({
+            message: 'Favorite artists saved successfully',
+            data: userFavArtists
+        });
+
+    } catch (error) {
+        console.error('Error saving favorite artists:', error);
+        res.status(500).json({
+            message: 'Error saving favorite artists',
+            error: error.message
+        });
+    }
+});
+
+// Route to get favorite artists
+app.get('/favartists/:userId', async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const userFavArtists = await FavArtist.findOne({ userId });
+
+        if (!userFavArtists) {
+            return res.status(404).json({ message: 'No favorite artists found' });
+        }
+
+        res.json(userFavArtists.artists);
+    } catch (error) {
+        console.error('Error fetching favorite artists:', error);
+        res.status(500).json({
+            message: 'Error fetching favorite artists',
+            error: error.message
+        });
+    }
+});
+
+// Start the server
 app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}/`);
+    if (!JAMENDO_CLIENT_ID) {
+        console.error('WARNING: JAMENDO_CLIENT_ID is not set in .env file');
+    }
+    console.log(`Artist service listening at http://localhost:${port}`);
 });
