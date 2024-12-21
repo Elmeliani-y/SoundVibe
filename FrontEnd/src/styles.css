@@ -5,5 +5,64 @@ body {
     padding: 0;               /* Remove default padding */
     font-family: Arial, sans-serif;  /* Set a default font */
 }
+<<<<<<< HEAD
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+=======
+
+/* Custom Dialog Styles */
+.custom-dialog-container {
+  backdrop-filter: blur(8px);
+}
+
+.custom-dialog-container .mat-mdc-dialog-container {
+  --mdc-dialog-container-color: transparent !important;
+}
+
+.custom-dialog-container .mat-mdc-dialog-surface {
+  background: transparent !important;
+  overflow: visible !important;
+}
+
+.cdk-overlay-pane {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+/* Custom Snackbar Styles */
+.custom-snackbar {
+  background: #2D2B52 !important;
+  color: white !important;
+}
+
+.custom-snackbar .mdc-snackbar__surface {
+  background-color: #2D2B52 !important;
+}
+
+.custom-snackbar .mat-simple-snackbar-action {
+  color: #6C63FF !important;
+}
+
+.cdk-overlay-backdrop {
+  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Dialog Animation */
+.mat-mdc-dialog-container {
+  animation: dialogFadeIn 0.2s ease-out;
+}
+
+@keyframes dialogFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+>>>>>>> 696cad982252011071a3096a42b4a027730b3502

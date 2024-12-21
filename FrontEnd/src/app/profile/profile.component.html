@@ -1,0 +1,70 @@
+<div class="main-container">
+  <app-sidebar-component></app-sidebar-component>
+  <div class="profile-container">
+    <div class="profile-header">
+      <div class="profile-info">
+        <div class="profile-pic">
+          <img [src]="user?.profilePic || 'assets/default-profile.png'" alt="Profile Picture">
+        </div>
+        <div class="user-details">
+          <h2>{{user?.name}}</h2>
+          <p class="username">{{'@' + user?.username}}</p>
+          <p class="music-style" *ngIf="user?.musicStyle">{{user?.musicStyle}}</p>
+          
+          <button *ngIf="isCurrentUser" (click)="toggleEdit()" class="edit-btn">
+            {{isEditing ? 'Cancel' : 'Edit Profile'}}
+          </button>
+        </div>
+      </div>
+
+      <div class="edit-form-container" [class.show-form]="isEditing">
+        <form *ngIf="isCurrentUser" [formGroup]="updateForm" (ngSubmit)="onSubmit()" class="edit-form" [class.visible]="isEditing">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input id="name" type="text" formControlName="name">
+          </div>
+          
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input id="email" type="email" formControlName="email">
+          </div>
+          
+          <div class="form-group">
+            <label for="musicStyle">Music Style</label>
+            <input id="musicStyle" type="text" formControlName="musicStyle">
+          </div>
+          
+          <button type="submit" [disabled]="!updateForm.valid" class="save-btn">
+            Save Changes
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Favorite Artists</h3>
+      <div class="artists-grid" *ngIf="user?.favArtists?.length; else noArtists">
+        <div class="artist-card" *ngFor="let artist of user?.favArtists">
+          <img [src]="artist.image" alt="Artist">
+          <p>{{artist.name}}</p>
+        </div>
+      </div>
+      <ng-template #noArtists>
+        <p class="no-content">No favorite artists yet.</p>
+      </ng-template>
+    </div>
+
+    <div class="section">
+      <h3>Playlists</h3>
+      <div class="playlists-grid" *ngIf="user?.likedPlaylists?.length; else noPlaylists">
+        <div class="playlist-card" *ngFor="let playlist of user?.likedPlaylists">
+          <img [src]="playlist.image" alt="Playlist">
+          <p>{{playlist.name}}</p>
+        </div>
+      </div>
+      <ng-template #noPlaylists>
+        <p class="no-content">No playlists yet.</p>
+      </ng-template>
+    </div>
+  </div>
+</div>

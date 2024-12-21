@@ -20,7 +20,7 @@ app.use(
     })
 );
 
-app.get('/playlists', verifyJWT, async (req, res) => {
+app.get('/playlists-Api', verifyJWT, async (req, res) => {
     try {
         const response = await axios.get(`${JAMENDO_API_URL}/playlists`, {
             params: {
@@ -30,14 +30,20 @@ app.get('/playlists', verifyJWT, async (req, res) => {
             }
         });
         const jamendoPlaylists = response.data.results;
-        const userPlaylists = await Playlist.find({ owner: req.user.id });
-        const combinedPlaylists = [...jamendoPlaylists, ...userPlaylists];
-        res.json(combinedPlaylists);
+        res.json(jamendoPlaylists);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching playlists', error: error.message });
     }
 });
 
+app.get('/playlists-user', verifyJWT, async (req, res) => {
+    try {
+        const playlists = await Playlist.find({ owner: req.user.id });
+        res.json(playlists);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching playlists' });
+    }
+});
 app.post('/playlists/new-pl', verifyJWT, async (req, res) => {
     const { name, description} = req.body;
     try {
