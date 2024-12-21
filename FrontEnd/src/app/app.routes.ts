@@ -12,7 +12,12 @@ export const routes: Routes = [
     title: 'Home',
   },
   { path: 'sign-up', component: SignUpComponent },
-  { path: 'login', component: LoginComponent },
+  
+  { path: 'login',
+     component: LoginComponent
+    
+  },
+  { path: 'sign-up', component: SignUpComponent },
   { path: 'explore', component: ExploreComponent },
   {
     path: 'profile/:userId',

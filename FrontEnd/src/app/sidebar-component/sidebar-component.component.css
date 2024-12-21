@@ -10,18 +10,45 @@
     overflow-y: auto;
     color: white;
     border-right: 1px solid #ccc;
+    z-index: 1000;
+}
+
+/* Custom scrollbar for sidebar */
+.sidebar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: #C969E6;
+    border-radius: 4px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: #db87f5;
 }
 
 /* Logo styles */
 .sidebar .side-hearder .logo img {
     width: 100%; 
-    
+    max-width: 200px;
+    display: block;
+    margin: 0 auto;
 }
-
 
 .features {
     margin-top: 80px;
-    }
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
 ul li a {
     color: white;
     font-size: 18px;
@@ -36,6 +63,11 @@ ul li a {
     margin-top: 15px; 
 }
 
+ul li a:hover {
+    background: rgba(201, 105, 230, 0.1);
+    color: #C969E6;
+}
+
 /* Sidebar icon styling */
 ul li a i {
     color: #824575;
@@ -43,6 +75,10 @@ ul li a i {
     padding-right: 15px;
 }
 
+.playlist {
+    margin-top: 40px;
+    padding: 0 20px;
+}
 
 .playlist a {
     text-decoration: none;
@@ -54,6 +90,9 @@ ul li a i {
     margin-right: 10px;
 }
 
+.playlist a:hover {
+    color: #C969E6;
+}
 
 .playlist .plus {
     font-size: 30px;
@@ -62,7 +101,6 @@ ul li a i {
     display: inline-block;
 }
 
-
 .line {
     width: 100%;
     height: 1px;
@@ -70,11 +108,9 @@ ul li a i {
     margin: 20px 0;
 }
 
-
 ul li {
     list-style-type: none;
 }
-
 
 .image {
     width: 150px;
@@ -85,7 +121,17 @@ ul li {
 .side-hearder {
     margin-bottom: 30px; 
 }
+
 .plus{
     margin-left: 120px;
-   
+}
+
+/* Active link styles */
+ul li a.active {
+    background: rgba(201, 105, 230, 0.1);
+    color: #C969E6;
+}
+
+ul li a.active i {
+    color: #C969E6;
 }
