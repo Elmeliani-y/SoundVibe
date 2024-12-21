@@ -14,13 +14,22 @@ mongoose.connect(MONGODB_URL,)
 
 const UserSchema = new mongoose.Schema({
     name: { type: String, required: true },
-    username: { type: String, required: true, unique: true },
+    lastname: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    profilePic: { type: Buffer },
     musicStyle: { type: String },
-    favArtists: [{ type: String }],
-    likedplaylists: [{ type: String }]
+    profilePicture: { 
+        type: String, 
+        default: null 
+    },
+    favArtists: [{ 
+        name: String,
+        image: String 
+    }],
+    likedPlaylists: [{ 
+        name: String,
+        image: String 
+    }]
 });
 
 const User = mongoose.model('User', UserSchema);

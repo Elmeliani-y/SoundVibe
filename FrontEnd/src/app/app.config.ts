@@ -9,12 +9,14 @@ export const appConfig: ApplicationConfig = {
   providers: [provideRouter(routes), provideClientHydration(), provideAnimationsAsync(), provideAnimationsAsync()]
 =======
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideHttpClient, withFetch } from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes), 
     provideClientHydration(),
-    provideAnimations()
+    provideAnimations(),
+    provideHttpClient(withFetch())
   ]
 >>>>>>> 696cad982252011071a3096a42b4a027730b3502
 };
