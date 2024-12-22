@@ -1,80 +1,74 @@
-
 .header {
     display: flex;
-    height: 75px;            
+    height: 80px;            
     margin: 0;               
     padding: 0;  
     border-bottom: 0.5px solid #a7a4a4; 
-    justify-content:flex-start;
-    align-items:center
-         
+   
 }
 
 .logo {
     width: 150px;  
     height: 130px;
-    margin-top: 20px;
+    padding-bottom: 20px;
 
 }
 
-/* Style the form container */
 form {
+    margin-top  : 50px;
     width: 100%;
-    max-width: 400px;
+    max-width: 500px;
     margin: 2rem auto;
-    padding: 2rem;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .form-title {
     font-size: 3rem;
-    font-weight:bolder;
-    color: white;  
-    text-align: center;
-    font-family: 'Kanit', sans-serif; 
-
+    font-weight: bolder;
+    color: white;
+    font-family: 'Kanit', sans-serif;
+    text-align: center;  
+    display: block;  
+    margin-bottom: 2rem;
 }
-
 label {
-    margin-bottom: 0.1rem;
+    margin-bottom: 0.2rem;
     display: block;
-    color: #ddd;
-    font-family: 'Kanit', sans-serif; 
+    color: #d4d2d2;
+    font-family: 'Kanit', sans-serif;
     font-size: 1rem;
-
-
 }
 
 input {
-    width: 100%;
+    width: 90%;
     padding: 0.70rem;
-    height: 10px; 
+    height: 40px;  
     margin-bottom: 1rem;
     border: 1px solid rgb(73, 70, 70);
     border-radius: 6px;
     font-size: 1rem;
     background-color: rgb(73, 70, 70);
+    color: white;
 }
-
 input:focus {
     border-color: #cb6ce6;
     outline: none;
 }
 
 button {
-    width: 106%;
+    width: 90%;
     padding: 0.05rem;
-    height: 35px; 
+    height: 40px; 
     margin-top: 0.9rem;
     background-color: #824575;
     color: white;
+    font-weight: bold;
     border: none;
     border-radius: 6px;
     font-size: 1rem;
     cursor: pointer;
-    font-family: 'Kanit', sans-serif; 
-
+    font-family: 'Kanit', sans-serif;
 }
 
 button:disabled {
@@ -105,7 +99,8 @@ div div {
     font-size: 0.75rem;
     text-align:left;
     display: flex;
-    gap: 10px
+    flex-direction:row;
+    gap: 10px,
 }
 .reminder p {
     margin: 0; 
@@ -119,19 +114,20 @@ div div {
     
 }
 
-
-
 .reminder p + a {
-    margin-left: 1px;
+    margin-left: 10px;
 }
 
 p .sign-up-link{
     color: #824575; font-weight: bold; font-size:larger;    text-decoration: none; 
     font-size: 1rem;
-}
-p .sign-up-link:hover {
-    color: #d4679d; 
-    cursor: pointer;
-  }
-  
+    margin-left: 10px;
+    margin-right: 10px;
 
+}
+p .sign-up-link:hover{
+
+    color: #d4679d; 
+    cursor: pointer
+ 
+}

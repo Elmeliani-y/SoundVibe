@@ -39,10 +39,19 @@
     margin: 0 auto;
 }
 
+.side-hearder {
+    margin-bottom: 30px; 
+}
+
 .features {
     
     margin-top: 80px;
-    }
+}
+
+ul li {
+    list-style-type: none;
+}
+
 ul li a {
     color: #fff;
     font-size: 18px;
@@ -74,7 +83,7 @@ ul li a i {
     padding: 0 20px;
 }
 
-/*.playlist a {
+.playlist a {
     text-decoration: none;
     font-family: "Roboto", sans-serif;
     font-weight: 500;
@@ -97,16 +106,11 @@ ul li a i {
     display: inline-block;
 }
 
-
 .line {
     width: 100%;
     height: 1px;
     background-color: rgb(90, 89, 89);
     margin: 20px 0;
-}
-
-ul li {
-    list-style-type: none;
 }
 
 .image {
@@ -115,10 +119,251 @@ ul li {
     top: 0;
 }
 
-.side-hearder {
-    margin-bottom: 30px; 
-}
-.plus{
+.plus {
     margin-left: 120px;
-   
+}
+    color:#fff;
+    font-size: 27px;
+    padding-right: 15px;
+}
+
+.playlist {
+    margin-top: 40px;
+    padding: 0 20px;
+}
+
+.playlist a {
+    text-decoration: none;
+    font-family: "Roboto", sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    color: white;
+    display: inline-block;
+    margin-right: 10px;
+    transition: all 0.3s ease;
+    border-radius: 5px;
+}
+
+.playlist a:hover {
+    color: #C969E6;
+}
+
+.playlist .plus {
+    font-size: 30px;
+    color: #824575;
+    font-weight: 400;
+    display: inline-block;
+}
+
+.line {
+    width: 100%;
+    height: 1px;
+    background-color: rgb(90, 89, 89);
+    margin: 20px 0;
+}
+
+.image {
+    width: 150px;
+    position: absolute;
+    top: 0;
+}
+
+.plus {
+    margin-left: 120px;
+}
+    color:#fff;
+    font-size: 27px;
+    padding-right: 15px;
+}
+
+.playlist {
+    margin-top: 40px;
+    padding: 0 20px;
+}
+
+.playlist a {
+    text-decoration: none;
+    font-family: "Roboto", sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    color: white;
+    display: inline-block;
+    margin-right: 10px;
+    transition: all 0.3s ease;
+    border-radius: 5px;
+}
+
+.playlist a:hover {
+    color: #C969E6;
+}
+
+.playlist .plus {
+    font-size: 30px;
+    color: #824575;
+    font-weight: 400;
+    display: inline-block;
+}
+
+.line {
+    width: 100%;
+    height: 1px;
+    background-color: rgb(90, 89, 89);
+    margin: 20px 0;
+}
+
+.image {
+    width: 150px;
+    position: absolute;
+    top: 0;
+}
+
+.plus {
+    margin-left: 120px;
+}
+    color:#fff;
+    font-size: 27px;
+    padding-right: 15px;
+}
+
+.playlist {
+    margin-top: 40px;
+    padding: 0 20px;
+}
+
+.playlist a {
+    text-decoration: none;
+    font-family: "Roboto", sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    color: white;
+    display: inline-block;
+    margin-right: 10px;
+    transition: all 0.3s ease;
+    border-radius: 5px;
+}
+
+.playlist a:hover {
+    color: #C969E6;
+}
+
+.playlist .plus {
+    font-size: 30px;
+    color: #824575;
+    font-weight: 400;
+    display: inline-block;
+}
+
+.line {
+    width: 100%;
+    height: 1px;
+    background-color: rgb(90, 89, 89);
+    margin: 20px 0;
+}
+
+.image {
+    width: 150px;
+    position: absolute;
+    top: 0;
+}
+
+.plus {
+    margin-left: 120px;
+}
+    color:#fff;
+    font-size: 27px;
+    padding-right: 15px;
+}
+
+.playlist {
+    margin-top: 40px;
+    padding: 0 20px;
+}
+
+.playlist a {
+    text-decoration: none;
+    font-family: "Roboto", sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    color: white;
+    display: inline-block;
+    margin-right: 10px;
+    transition: all 0.3s ease;
+    border-radius: 5px;
+}
+
+.playlist a:hover {
+    color: #C969E6;
+}
+
+.playlist .plus {
+    font-size: 30px;
+    color: #824575;
+    font-weight: 400;
+    display: inline-block;
+}
+
+.line {
+    width: 100%;
+    height: 1px;
+    background-color: rgb(90, 89, 89);
+    margin: 20px 0;
+}
+
+.image {
+    width: 150px;
+    position: absolute;
+    top: 0;
+}
+
+.plus {
+    margin-left: 120px;
+}
+    color:#fff;
+    font-size: 27px;
+    padding-right: 15px;
+}
+
+.playlist {
+    margin-top: 40px;
+    padding: 0 20px;
+}
+
+.playlist a {
+    text-decoration: none;
+    font-family: "Roboto", sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    color: white;
+    display: inline-block;
+    margin-right: 10px;
+    transition: all 0.3s ease;
+    border-radius: 5px;
+}
+
+.playlist a:hover {
+    color: #C969E6;
+}
+
+.playlist .plus {
+    font-size: 30px;
+    color: #824575;
+    font-weight: 400;
+    display: inline-block;
+}
+
+.line {
+    width: 100%;
+    height: 1px;
+    background-color: rgb(90, 89, 89);
+    margin: 20px 0;
+}
+
+.image {
+    width: 150px;
+    position: absolute;
+    top: 0;
+}
+
+.plus {
+    margin-left: 120px;
 }

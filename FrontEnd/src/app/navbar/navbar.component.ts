@@ -10,5 +10,5 @@ import { RouterModule } from '@angular/router';
   imports: [CommonModule, RouterModule]
 })
 export class NavbarComponent {
-  currentUserId: string = 'user1'; // Hardcoded for now
+  currentUserId: string = 'user1';
 }
