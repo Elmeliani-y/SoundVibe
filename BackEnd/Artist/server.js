@@ -8,6 +8,7 @@ const bodyParser = require('body-parser');
 const app = express();
 const port = process.env.PORT4 || 3003;
 
+<<<<<<< HEAD
 // Create FavArtist Schema
 const favArtistSchema = new mongoose.Schema({
     userId: { type: String, required: true }, // We'll add user authentication later
@@ -25,6 +26,18 @@ const favArtistSchema = new mongoose.Schema({
 
 const FavArtist = mongoose.model('FavArtist', favArtistSchema);
 
+=======
+// MongoDB connection
+mongoose.connect('mongodb://localhost:27017/SoundVibe', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}).then(() => {
+    console.log('Connected to MongoDB');
+}).catch(err => {
+    console.error('MongoDB connection error:', err);
+});
+
+>>>>>>> fc2aeac822ff033979eb092668e5265de2da02b7
 app.use(cors({
     origin: 'http://localhost:4200',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -34,7 +47,7 @@ app.use(cors({
 app.use(bodyParser.json());
 
 const JAMENDO_API_URL = 'https://api.jamendo.com/v3.0';
-const JAMENDO_CLIENT_ID = 'f9409435'; // Using the client ID from your .env file
+const JAMENDO_CLIENT_ID = 'f9409435';
 
 // Function to add delay between requests
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -48,7 +61,7 @@ async function fetchArtists() {
                 client_id: JAMENDO_CLIENT_ID,
                 format: 'json',
                 limit: 50,
-                imagesize: 200, // Request larger images
+                imagesize: 200,
                 include: 'image',
                 boost: 'popularity_total',
                 orderby: 'popularity_total'
@@ -64,7 +77,7 @@ async function fetchArtists() {
         const artists = response.data.results.map(artist => ({
             id: artist.id,
             name: artist.name,
-            image: artist.image || 'assets/person.jpg', // Use default image if none available
+            image: artist.image || 'assets/person.jpg',
             joindate: artist.joindate,
             website: artist.website || null,
             shorturl: artist.shorturl || null,
@@ -113,6 +126,7 @@ app.get('/artists', async (req, res) => {
     }
 });
 
+<<<<<<< HEAD
 // Route to search artists
 app.get('/search', async (req, res) => {
     const { query } = req.query;
@@ -204,6 +218,8 @@ app.get('/favartists/:userId', async (req, res) => {
     }
 });
 
+=======
+>>>>>>> fc2aeac822ff033979eb092668e5265de2da02b7
 // Start the server
 app.listen(port, () => {
     if (!JAMENDO_CLIENT_ID) {

@@ -3,16 +3,50 @@ dotenv.config();
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
-const MONGODB_URL = process.env.MONGODB_URL;
+const MONGODB_URL = process.env.MONGODB_URL || 'mongodb://localhost:27017/SoundVibe';
 console.log('MONGODB_URL:', MONGODB_URL);
 
 if (!MONGODB_URL) {
     throw new Error("MONGODB_URL is not defined in .env file");
 }
 
-mongoose.connect(MONGODB_URL)
-    .then(() => console.log("Connected to MongoDB"))
-    .catch(err => console.error("Failed to connect to MongoDB:", err));
+// MongoDB connection options
+const mongooseOptions = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    serverSelectionTimeoutMS: 5000,
+    socketTimeoutMS: 45000,
+    family: 4
+};
+
+// Connect to MongoDB with retry logic
+async function connectWithRetry() {
+    try {
+        await mongoose.connect(MONGODB_URL, mongooseOptions);
+        console.log("Successfully connected to MongoDB");
+        
+        // Log when the connection is lost
+        mongoose.connection.on('disconnected', () => {
+            console.log('Lost MongoDB connection...');
+            // Try to reconnect
+            setTimeout(connectWithRetry, 5000);
+        });
+        
+        // Log any errors
+        mongoose.connection.on('error', (err) => {
+            console.error('MongoDB connection error:', err);
+        });
+        
+    } catch (err) {
+        console.error('MongoDB connection error:', err);
+        // Retry connection after 5 seconds
+        console.log('Retrying connection in 5 seconds...');
+        setTimeout(connectWithRetry, 5000);
+    }
+}
+
+// Initial connection
+connectWithRetry();
 
 const UserSchema = new mongoose.Schema({
     name: { 
@@ -47,10 +81,11 @@ const UserSchema = new mongoose.Schema({
         type: String,
         default: 'default-profile.jpg'
     },
-    favArtists: [{
-        type: String,
+    favArtists: {
+        type: [String],
+        default: [],
         ref: 'Artist'
-    }],
+    },
     likedPlaylists: [{
         type: String,
         ref: 'Playlist'
@@ -80,5 +115,5 @@ UserSchema.virtual('fullName').get(function() {
     return `${this.name} ${this.lastname}`;
 });
 
-const User = mongoose.model('User', UserSchema);
+const User = mongoose.model('User', UserSchema, 'user');
 module.exports = User;

@@ -106,7 +106,8 @@ const transporter = nodemailer.createTransport({
 // Sign-up endpoint
 app.post('/sign-up', async (req, res) => {
   try {
-    console.log('Signup request received:', req.body);
+    console.log('\n=== New Signup Request ===');
+    console.log('Request body:', req.body);
     const { name, lastname, email, password, musicStyle } = req.body;
 
     // Validate required fields
@@ -118,38 +119,57 @@ app.post('/sign-up', async (req, res) => {
     }
 
     // Check if user already exists
+    console.log('Checking if user exists with email:', email);
     const existingUser = await userModel.findOne({ email });
     if (existingUser) {
       console.log('User already exists:', email);
       return res.status(400).json({ message: 'User already exists with this email' });
     }
+    console.log('No existing user found, proceeding with signup');
 
     // Hash password
+    console.log('Hashing password...');
     const hashedPassword = await bcrypt.hash(password, 10);
     console.log('Password hashed successfully');
 
     // Create new user
+    console.log('Creating new user document...');
     const user = new userModel({
       name,
       lastname,
       email,
       password: hashedPassword,
       musicStyle: musicStyle || '',
-      profilePicture: null
+      profilePicture: null,
+      favArtists: []
     });
 
     // Save user to database
-    await user.save();
-    console.log('User saved successfully:', user._id);
+    console.log('Attempting to save user to database...');
+    try {
+      const savedUser = await user.save();
+      console.log('User saved successfully. Document:', {
+        id: savedUser._id,
+        email: savedUser.email,
+        name: savedUser.name,
+        lastname: savedUser.lastname
+      });
+    } catch (saveError) {
+      console.error('Error saving user to database:', saveError);
+      throw saveError;
+    }
 
     // Generate token
+    console.log('Generating JWT token...');
     const token = jwt.sign(
       { id: user._id, email: user.email },
       process.env.SECRET_KEY,
       { expiresIn: '24h' }
     );
+    console.log('Token generated successfully');
 
     // Send response
+    console.log('Sending success response...');
     res.status(201).json({ 
       message: 'User created successfully',
       token,
@@ -160,8 +180,11 @@ app.post('/sign-up', async (req, res) => {
         profilePicture: user.profilePicture
       }
     });
+    console.log('=== Signup Complete ===\n');
   } catch (error) {
-    console.error('Signup error:', error);
+    console.error('\n=== Signup Error ===');
+    console.error('Error details:', error);
+    console.error('Full error object:', JSON.stringify(error, null, 2));
     if (error.code === 11000) {
       return res.status(400).json({ message: 'Email already exists' });
     }
@@ -447,33 +470,147 @@ app.post('/logout', (req, res) => {
 app.post(`/artists/:artistid/favorite`, verifyJWT, async (req, res) => {
     const { artistid } = req.params;
     try {
-        const user = await userModel.findOne({ email: req.user.email });
+        console.log('\n=== Adding Artist to Favorites ===');
+        console.log('Artist ID:', artistid);
+        console.log('User ID from token:', req.user.id);
+        console.log('User email from token:', req.user.email);
+        
+        // First try to find the user
+        const user = await userModel.findById(req.user.id);
+        console.log('Found user:', user ? {
+            id: user._id,
+            email: user.email,
+            favArtists: user.favArtists
+        } : 'No user found');
+        
         if (!user) {
+            console.log('User not found in database');
             return res.status(404).json({ message: 'User not found' });
         }
-        if (!user.favoriteArtists.includes(artistid)) {
-            user.favoriteArtists.push(artistid);
-            await user.save();
+
+        // Initialize favArtists if it doesn't exist
+        if (!user.favArtists) {
+            console.log('Initializing favArtists array');
+            user.favArtists = [];
         }
-        res.json({ message: 'Artist added to favorites' });
+
+        console.log('Current favorite artists:', user.favArtists);
+        
+        // Check if artist is not already in favorites
+        if (!user.favArtists.includes(artistid)) {
+            console.log('Adding new artist to favorites');
+            // Add the artist ID to favorites
+            user.favArtists.push(artistid);
+            console.log('Updated favorite artists:', user.favArtists);
+            
+            // Mark the field as modified
+            user.markModified('favArtists');
+            console.log('Marked favArtists as modified');
+            
+            try {
+                // Save the changes
+                const savedUser = await user.save();
+                console.log('Successfully saved user. Updated document:', {
+                    id: savedUser._id,
+                    email: savedUser.email,
+                    favArtists: savedUser.favArtists
+                });
+            } catch (saveError) {
+                console.error('Error saving user:', saveError);
+                throw saveError;
+            }
+        } else {
+            console.log('Artist already in favorites');
+        }
+        
+        res.json({ 
+            message: 'Artist added to favorites',
+            favArtists: user.favArtists 
+        });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error('Error in /favorite endpoint:', error);
+        console.error('Full error object:', JSON.stringify(error, null, 2));
+        res.status(500).json({ 
+            message: error.message,
+            stack: error.stack 
+        });
     }
 });
 
 app.post(`/artists/:artistid/unfavorite`, verifyJWT, async (req, res) => {
     const { artistid } = req.params;
     try {
-        const user = await userModel.findOne({ email: req.user.email });
+        console.log('=== Removing Artist from Favorites ===');
+        console.log('Artist ID:', artistid);
+        console.log('User from token:', req.user);
+        
+        const user = await userModel.findById(req.user.id);
+        console.log('Found user:', user ? 'Yes' : 'No');
+        
         if (!user) {
+            console.log('User not found in database');
             return res.status(404).json({ message: 'User not found' });
         }
-        if (user.favoriteArtists.includes(artistid)) {
-            user.favoriteArtists = user.favoriteArtists.filter(id => id !== artistid);
-            await user.save();
+
+        // Initialize favArtists if it doesn't exist
+        if (!user.favArtists) {
+            console.log('Initializing favArtists array');
+            user.favArtists = [];
         }
-        res.json({ message: 'Artist removed from favorites' });
+
+        console.log('Current favorite artists:', user.favArtists);
+        
+        // Remove the artist ID from favorites
+        const initialLength = user.favArtists.length;
+        user.favArtists = user.favArtists.filter(id => id !== artistid);
+        console.log('Updated favorite artists:', user.favArtists);
+        
+        if (user.favArtists.length !== initialLength) {
+            // Mark the field as modified
+            user.markModified('favArtists');
+            console.log('Marked favArtists as modified');
+            
+            // Save the changes
+            await user.save();
+            console.log('Successfully saved user');
+        } else {
+            console.log('Artist was not in favorites');
+        }
+        
+        res.json({ 
+            message: 'Artist removed from favorites',
+            favArtists: user.favArtists 
+        });
     } catch (error) {
+        console.error('Error in /unfavorite endpoint:', error);
+        console.error('Full error object:', JSON.stringify(error, null, 2));
+        res.status(500).json({ 
+            message: error.message,
+            stack: error.stack 
+        });
+    }
+});
+
+app.get('/favorite-artists', verifyJWT, async (req, res) => {
+    try {
+        console.log('=== Getting Favorite Artists ===');
+        console.log('User from token:', req.user);
+        
+        const user = await userModel.findById(req.user.id);
+        console.log('Found user:', user ? 'Yes' : 'No');
+        
+        if (!user) {
+            console.log('User not found in database');
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        console.log('User favorite artists:', user.favArtists);
+        
+        res.json({ 
+            favArtists: user.favArtists || [] 
+        });
+    } catch (error) {
+        console.error('Error getting favorite artists:', error);
         res.status(500).json({ message: error.message });
     }
 });
