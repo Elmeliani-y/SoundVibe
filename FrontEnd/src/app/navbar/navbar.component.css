@@ -1,114 +1,102 @@
-.navbar {
-  background-color: #0F0C12;
-  height: 50px; 
-
-}
-
-.searchbar {
-  position: fixed;
-  width: 100%;
-  left: 350px;
-  top: 12px;
-}
-
-.search {
-  width: 100%;
-  max-width: 350px;
-  height: 40px;
+/* Sidebar styles */
+.sidebar {
   background-color: #1A181F;
-  border: 2px solid transparent;
-  border-radius: 20px;
+  width: 250px;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 20px;
+  overflow-y: auto;
+  color: white;
+  border-right: 1px solid #ccc;
+}
+
+/* Logo styles */
+.sidebar .side-header .logo img {
+  width: 100%; 
+}
+
+.features {
+  margin-top: 80px;
+  margin-right: 10px;
+}
+
+ul li {
+  list-style-type: none;
+}
+
+ul li a {
   color: #fff;
-  font-size: 16px;
-  font-family: "Roboto", sans-serif;
-  padding-left: 35px;  
-  margin-left: 5px;
-}
-
-.search::placeholder {
-  color: #78787e;
-  font-size: 15px;
-  font-weight: 500;
-  font-family: "Roboto", sans-serif;
-  
-}
-
-.search:focus::placeholder {
-  color: transparent;
-}
-
-.search:focus {
-  border-color: #db87f5;
-  outline: none;
-}
-
-.search:hover {
-  background-color: #3c3c3f;
-}
-
-.button {
-  position: absolute;
-  left: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-}
-
-.button i {
-  font-size: 20px;
-  color: #cccccc;
-  margin-top: 10px;
-}
-
-.button:hover i {
-  color: #db87f5;
-}
-
-.nav-links {
-  display: flex;
+  font-size: 18px;
+  text-decoration: none;
+  display: flex; /* Use flexbox for icon + text alignment */
   align-items: center;
-  margin-left: auto;
-  margin-right: 20px;
+  padding: 10px;
+  font-family: "Roboto", sans-serif;
+  font-weight: 500;
+  position: relative;
+  margin-top: 15px; 
+  transition: all 0.3s ease; /* Smooth transition */
+  border-radius: 5px; /* Rounded edges */
 }
 
-.profile-pic {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid #C969E6;
+/* Sidebar icon styling */
+ul li a i {
+  color: #fff;
+  font-size: 27px;
+  padding-right: 15px;
+  transition: color 0.3s ease; /* Smooth transition for color */
 }
 
-.profile-link {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #fff;
-    text-decoration: none;
-    padding: 8px 16px;
-    border-radius: 20px;
-    transition: all 0.2s ease;
+/* Hover and focus effects (applied to <a>, affecting icon and text together) */
+ul li a:hover, ul li a:focus {
+  background-color: #29282D; /* Darker purple background */
+  color: #C66BDE; /* Light purple text */
+  border-radius: 9px;
 }
 
-.profile-link:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    transform: translateY(-2px);
+ul li a:hover i, ul li a:focus i {
+  color: #C66BDE; /* Light purple icon */
 }
 
-.profile-link:hover .profile-pic {
-    border-color: #db87f5;
+/* Playlist styles */
+.playlist a {
+  text-decoration: none;
+  font-family: "Roboto", sans-serif;
+  font-weight: 500;
+  font-size: 20px;
+  color: white;
+  display: inline-block;
+  margin-right: 10px;
+  transition: all 0.3s ease;
+  border-radius: 5px;
 }
 
-.profile-link span {
-    font-size: 14px;
-    font-weight: 500;
+.playlist .plus {
+  font-size: 30px;
+  color: #824575;
+  font-weight: 400;
+  display: inline-block;
 }
 
 .line {
-  width: 1360px; 
+  width: 100%;
   height: 1px;
   background-color: rgb(90, 89, 89);
   margin: 20px 0;
+}
+
+.image {
+  width: 150px;
+  position: absolute;
+  top: 0;
+}
+
+.side-header {
+  margin-bottom: 30px; 
+}
+
+.plus {
+  margin-left: 120px;
 }

@@ -8,8 +8,10 @@ import { ProfileComponent } from './profile/profile.component';
 
 export const routes: Routes = [
   
+
+  { path: '', component: SignUpComponent },
   {
-    path:'',
+    path:'choose-artist',
     component:ChooseArtistComponent,
     title:'choose Artists'
   },
@@ -22,13 +24,12 @@ export const routes: Routes = [
   
   
  
-  { path: 'sign-up', component: SignUpComponent },
   
   { path: 'login',
      component: LoginComponent
     
   },
-  { path: 'sign-up', component: SignUpComponent },
+  
   { path: 'explore', component: ExploreComponent },
   {
    path: 'profile/:userId',

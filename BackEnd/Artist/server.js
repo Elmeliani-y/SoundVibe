@@ -9,7 +9,7 @@ const app = express();
 const port = process.env.PORT4 || 3003;
 
 // MongoDB connection
-mongoose.connect('mongodb://localhost:27017/soundvibe', {
+mongoose.connect('mongodb://localhost:27017/SoundVibe', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(() => {

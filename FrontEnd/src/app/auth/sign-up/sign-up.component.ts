@@ -55,17 +55,22 @@ export class SignUpComponent {
         console.log('Response:', response);
         
         if (response && response.message === 'User created successfully') {
+          // Store the user ID in localStorage
+          if (response.userId) {
+            localStorage.setItem('userId', response.userId);
+          }
+
           // Show success message
-          this.snackBar.open('Account created successfully! Please login.', 'Close', {
+          this.snackBar.open('Account created successfully! Please choose your favorite artists.', 'Close', {
             duration: 3000,
             horizontalPosition: 'center',
             verticalPosition: 'top'
           });
 
-          // Navigate to login page
-          this.router.navigate(['/login']).then(
+          // Navigate to choose-artist page instead of login
+          this.router.navigate(['/choose-artist']).then(
             () => {
-              console.log('Successfully navigated to login page');
+              console.log('Successfully navigated to choose-artist page');
             },
             (error) => {
               console.error('Navigation error:', error);

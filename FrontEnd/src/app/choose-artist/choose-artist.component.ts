@@ -1,3 +1,5 @@
+import { HttpClientModule } from '@angular/common/http';
+
 import { Component, OnInit } from '@angular/core';
 import { ArtistService, Artist } from '../services/artist.service';
 import { CommonModule } from '@angular/common';
@@ -5,11 +7,13 @@ import { FormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-choose-artist',
   standalone: true,
   imports: [CommonModule, FormsModule],
+  providers: [ArtistService], 
   templateUrl: './choose-artist.component.html',
   styleUrls: ['./choose-artist.component.css'],
 })
@@ -27,7 +31,8 @@ export class ChooseArtistComponent implements OnInit {
 
   constructor(
     private artistService: ArtistService,
-    private router: Router
+    private router: Router,
+    private snackBar: MatSnackBar
   ) {
     this.searchSubject.pipe(
       debounceTime(300),
@@ -102,16 +107,36 @@ export class ChooseArtistComponent implements OnInit {
     if (this.canProceed() && !this.isSaving) {
       this.isSaving = true;
       this.errorMessage = '';
+      
+      // Get the user ID from localStorage
+      const userId = localStorage.getItem('userId');
+      
+      if (!userId) {
+        this.errorMessage = 'User ID not found. Please try logging in again.';
+        this.isSaving = false;
+        return;
+      }
 
-      // For now, using a temporary user ID
-      const tempUserId = 'temp-user-id';
+      // Create the payload with user ID and selected artists
+      const payload = {
+        userId: userId,
+        artists: this.selectedArtists
+      };
 
-      this.artistService.saveFavoriteArtists(this.selectedArtists).subscribe({
+      this.artistService.saveFavoriteArtists(payload).subscribe({
         next: (response) => {
           console.log('Favorite artists saved:', response);
           this.isSaving = false;
-          // Navigate to the next page or show success message
-          // this.router.navigate(['/next-page']);
+          
+          // Show success message
+          this.snackBar.open('Your favorite artists have been saved!', 'Close', {
+            duration: 3000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top'
+          });
+
+          // Navigate to the home-app page
+          this.router.navigate(['/home-app']);
         },
         error: (error) => {
           console.error('Error saving favorite artists:', error);

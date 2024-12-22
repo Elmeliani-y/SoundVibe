@@ -63,11 +63,11 @@ export class ArtistService {
 
   /**
    * Function to save favorite artists
-   * @param artists - The list of favorite artists
+   * @param payload - Object containing userId and artists array
    * @returns Observable<any> - The response from the backend
    */
-  saveFavoriteArtists(artists: Artist[]): Observable<any> {
-    return this.http.post(`${this.apiUrl}/favartists`, { artists });
+  saveFavoriteArtists(payload: { userId: string; artists: Artist[] }): Observable<any> {
+    return this.http.post(`${this.apiUrl}/favartists`, payload);
   }
 
   /**

@@ -12,6 +12,7 @@ export interface AuthResponse {
     profilePicture?: string;
   };
   message: string;
+  userId?: string; // Added for backward compatibility
 }
 
 @Injectable({
@@ -58,7 +59,11 @@ export class AuthService {
         if (response.token) {
           console.log('Storing token and user info');
           localStorage.setItem('token', response.token);
-          localStorage.setItem('userId', response.user.id);
+          // Store user ID from either response.user.id or response.userId
+          const userId = response.user?.id || response.userId;
+          if (userId) {
+            localStorage.setItem('userId', userId);
+          }
           localStorage.setItem('email', email);
         }
         return response;

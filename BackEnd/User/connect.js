@@ -4,7 +4,8 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
 const MONGODB_URL = process.env.MONGODB_URL;
-console.log('MONGODB_URL:', MONGODB_URL); 
+console.log('MONGODB_URL:', MONGODB_URL);
+
 if (!MONGODB_URL) {
     throw new Error("MONGODB_URL is not defined in .env file");
 }
