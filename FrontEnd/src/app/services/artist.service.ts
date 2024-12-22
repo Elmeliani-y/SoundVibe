@@ -17,7 +17,8 @@ export interface Artist {
   providedIn: 'root',
 })
 export class ArtistService {
-  private apiUrl = 'http://localhost:3003'; // Backend API URL
+  private apiUrl = 'http://localhost:3003'; // Artist service URL
+  private userApiUrl = 'http://localhost:3000'; // User service URL
 
   constructor(private http: HttpClient) {}
 
@@ -54,29 +55,62 @@ export class ArtistService {
   searchArtists(query: string): Observable<Artist[]> {
     const url = `${this.apiUrl}/artists/search?q=${encodeURIComponent(query)}`;
     return this.http.get<Artist[]>(url).pipe(
-        catchError((error: any) => {
-            console.error('Error searching artists:', error.message, error);
-            return throwError(() => new Error('Failed to search artists'));
-        })
+      catchError((error: any) => {
+        console.error('Error searching artists:', error.message, error);
+        return throwError(() => new Error('Failed to search artists'));
+      })
     );
-}
-
-  /**
-   * Function to save favorite artists
-   * @param payload - Object containing userId and artists array
-   * @returns Observable<any> - The response from the backend
-   */
-  saveFavoriteArtists(payload: { userId: string; artists: Artist[] }): Observable<any> {
-    return this.http.post(`${this.apiUrl}/favartists`, payload);
   }
 
   /**
-   * Function to get favorite artists for a user
-   * @param userId - The ID of the user
-   * @returns Observable<Artist[]> - The list of favorite artists
+   * Function to add an artist to favorites
+   * @param artist - The artist to add to favorites
+   * @returns Observable<any> - The response from the backend
    */
-  getFavoriteArtists(userId: string): Observable<Artist[]> {
-    return this.http.get<Artist[]>(`${this.apiUrl}/favartists/${userId}`);
+  addToFavorites(artist: Artist): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+    return this.http.post(`${this.userApiUrl}/artists/${artist.id}/favorite`, {}, { headers }).pipe(
+      catchError(error => {
+        console.error('Error adding artist to favorites:', error);
+        return throwError(() => new Error('Failed to add artist to favorites'));
+      })
+    );
+  }
+
+  /**
+   * Function to remove an artist from favorites
+   * @param artist - The artist to remove from favorites
+   * @returns Observable<any> - The response from the backend
+   */
+  removeFromFavorites(artist: Artist): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+    return this.http.post(`${this.userApiUrl}/artists/${artist.id}/unfavorite`, {}, { headers }).pipe(
+      catchError(error => {
+        console.error('Error removing artist from favorites:', error);
+        return throwError(() => new Error('Failed to remove artist from favorites'));
+      })
+    );
+  }
+
+  /**
+   * Function to get favorite artists for the current user
+   * @returns Observable<string[]> - Array of favorite artist IDs
+   */
+  getFavoriteArtists(): Observable<string[]> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+    return this.http.get(`${this.userApiUrl}/profile`, { headers }).pipe(
+      map((response: any) => response.favArtists || []),
+      catchError(error => {
+        console.error('Error getting favorite artists:', error);
+        return throwError(() => new Error('Failed to get favorite artists'));
+      })
+    );
   }
 
   /**

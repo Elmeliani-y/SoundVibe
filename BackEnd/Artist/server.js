@@ -18,23 +18,6 @@ mongoose.connect('mongodb://localhost:27017/SoundVibe', {
     console.error('MongoDB connection error:', err);
 });
 
-// Create FavArtist Schema
-const favArtistSchema = new mongoose.Schema({
-    userId: { type: String, required: true }, // We'll add user authentication later
-    artists: [{
-        id: String,
-        name: String,
-        image: String,
-        joindate: String,
-        website: String,
-        shorturl: String,
-        shareurl: String
-    }],
-    createdAt: { type: Date, default: Date.now }
-});
-
-const FavArtist = mongoose.model('FavArtist', favArtistSchema);
-
 app.use(cors({
     origin: 'http://localhost:4200',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -44,7 +27,7 @@ app.use(cors({
 app.use(bodyParser.json());
 
 const JAMENDO_API_URL = 'https://api.jamendo.com/v3.0';
-const JAMENDO_CLIENT_ID = 'f9409435'; // Using the client ID from your .env file
+const JAMENDO_CLIENT_ID = 'f9409435';
 
 // Function to add delay between requests
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -58,7 +41,7 @@ async function fetchArtists() {
                 client_id: JAMENDO_CLIENT_ID,
                 format: 'json',
                 limit: 50,
-                imagesize: 200, // Request larger images
+                imagesize: 200,
                 include: 'image',
                 boost: 'popularity_total',
                 orderby: 'popularity_total'
@@ -74,7 +57,7 @@ async function fetchArtists() {
         const artists = response.data.results.map(artist => ({
             id: artist.id,
             name: artist.name,
-            image: artist.image || 'assets/person.jpg', // Use default image if none available
+            image: artist.image || 'assets/person.jpg',
             joindate: artist.joindate,
             website: artist.website || null,
             shorturl: artist.shorturl || null,
@@ -119,68 +102,6 @@ app.get('/artists', async (req, res) => {
             message: 'Internal Server Error',
             error: error.message,
             clientId: JAMENDO_CLIENT_ID
-        });
-    }
-});
-
-// Route to save favorite artists
-app.post('/favartists', async (req, res) => {
-    try {
-        const { artists } = req.body;
-        
-        if (!artists || !Array.isArray(artists)) {
-            return res.status(400).json({ message: 'Invalid artists data' });
-        }
-
-        // For now, using a temporary userId. Later, this should come from authentication
-        const tempUserId = 'temp-user-id';
-
-        // Check if user already has favorite artists
-        let userFavArtists = await FavArtist.findOne({ userId: tempUserId });
-
-        if (userFavArtists) {
-            // Update existing favorites
-            userFavArtists.artists = artists;
-            await userFavArtists.save();
-        } else {
-            // Create new favorites document
-            userFavArtists = new FavArtist({
-                userId: tempUserId,
-                artists: artists
-            });
-            await userFavArtists.save();
-        }
-
-        res.status(201).json({
-            message: 'Favorite artists saved successfully',
-            data: userFavArtists
-        });
-
-    } catch (error) {
-        console.error('Error saving favorite artists:', error);
-        res.status(500).json({
-            message: 'Error saving favorite artists',
-            error: error.message
-        });
-    }
-});
-
-// Route to get favorite artists
-app.get('/favartists/:userId', async (req, res) => {
-    try {
-        const { userId } = req.params;
-        const userFavArtists = await FavArtist.findOne({ userId });
-
-        if (!userFavArtists) {
-            return res.status(404).json({ message: 'No favorite artists found' });
-        }
-
-        res.json(userFavArtists.artists);
-    } catch (error) {
-        console.error('Error fetching favorite artists:', error);
-        res.status(500).json({
-            message: 'Error fetching favorite artists',
-            error: error.message
         });
     }
 });

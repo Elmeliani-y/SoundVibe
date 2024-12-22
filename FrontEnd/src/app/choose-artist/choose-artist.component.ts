@@ -8,6 +8,7 @@ import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { forkJoin } from 'rxjs'; // Import forkJoin
 
 @Component({
   selector: 'app-choose-artist',
@@ -108,24 +109,15 @@ export class ChooseArtistComponent implements OnInit {
       this.isSaving = true;
       this.errorMessage = '';
       
-      // Get the user ID from localStorage
-      const userId = localStorage.getItem('userId');
-      
-      if (!userId) {
-        this.errorMessage = 'User ID not found. Please try logging in again.';
-        this.isSaving = false;
-        return;
-      }
+      // Use forkJoin to handle multiple requests
+      const addFavoriteRequests = this.selectedArtists.map(artist => 
+        this.artistService.addToFavorites(artist)
+      );
 
-      // Create the payload with user ID and selected artists
-      const payload = {
-        userId: userId,
-        artists: this.selectedArtists
-      };
-
-      this.artistService.saveFavoriteArtists(payload).subscribe({
-        next: (response) => {
-          console.log('Favorite artists saved:', response);
+      // Execute all requests in parallel
+      forkJoin(addFavoriteRequests).subscribe({
+        next: (responses) => {
+          console.log('All favorite artists saved:', responses);
           this.isSaving = false;
           
           // Show success message
