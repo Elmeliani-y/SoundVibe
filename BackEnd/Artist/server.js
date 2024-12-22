@@ -8,7 +8,6 @@ const bodyParser = require('body-parser');
 const app = express();
 const port = process.env.PORT4 || 3003;
 
-<<<<<<< HEAD
 // Create FavArtist Schema
 const favArtistSchema = new mongoose.Schema({
     userId: { type: String, required: true }, // We'll add user authentication later
@@ -26,7 +25,7 @@ const favArtistSchema = new mongoose.Schema({
 
 const FavArtist = mongoose.model('FavArtist', favArtistSchema);
 
-=======
+
 // MongoDB connection
 mongoose.connect('mongodb://localhost:27017/SoundVibe', {
     useNewUrlParser: true,
@@ -37,7 +36,6 @@ mongoose.connect('mongodb://localhost:27017/SoundVibe', {
     console.error('MongoDB connection error:', err);
 });
 
->>>>>>> fc2aeac822ff033979eb092668e5265de2da02b7
 app.use(cors({
     origin: 'http://localhost:4200',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -126,7 +124,6 @@ app.get('/artists', async (req, res) => {
     }
 });
 
-<<<<<<< HEAD
 // Route to search artists
 app.get('/search', async (req, res) => {
     const { query } = req.query;
@@ -218,8 +215,6 @@ app.get('/favartists/:userId', async (req, res) => {
     }
 });
 
-=======
->>>>>>> fc2aeac822ff033979eb092668e5265de2da02b7
 // Start the server
 app.listen(port, () => {
     if (!JAMENDO_CLIENT_ID) {
