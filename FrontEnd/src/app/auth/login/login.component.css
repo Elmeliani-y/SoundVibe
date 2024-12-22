@@ -28,9 +28,10 @@ form {
     font-weight: bolder;
     color: white;
     font-family: 'Kanit', sans-serif;
-    text-align: center;  
     display: block;  
     margin-bottom: 2rem;
+    margin-left: 150px;
+
 }
 label {
     margin-bottom: 0.2rem;

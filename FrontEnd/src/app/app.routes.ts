@@ -7,6 +7,14 @@ import { HomeAppComponent } from './home-app/home-app.component';
 import { ProfileComponent } from './profile/profile.component';
 
 export const routes: Routes = [
+
+  { path: '', redirectTo:'sign-up', pathMatch: 'full' },
+  {
+    path: 'sign-up',
+    component: SignUpComponent,
+    title: 'Sign Up'
+  },
+
   
   {
     path:'choose-artist',
@@ -18,16 +26,11 @@ export const routes: Routes = [
     component: HomeAppComponent, 
     title: 'home',
   },
-  
-  
- 
-  { path: 'sign-up', component: SignUpComponent },
-  
+    
   { path: 'login',
      component: LoginComponent
     
   },
-  { path: 'sign-up', component: SignUpComponent },
   { path: 'explore', component: ExploreComponent },
   {
     path: 'profile/:userId',

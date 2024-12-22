@@ -77,7 +77,7 @@ export class SignUpComponent {
           });
 
           // Navigate to login page
-          this.router.navigate(['/login']).then(
+          this.router.navigate(['/choose-artist']).then(
             () => {
               console.log('Successfully navigated to choose-artist page');
             },
