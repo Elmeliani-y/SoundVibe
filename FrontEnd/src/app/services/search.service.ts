@@ -14,7 +14,7 @@ export interface SearchResult {
 interface JamendoTrack {
   id: string;
   name: string;
-  image: string;
+  image?: string;
   audio: string;
   duration: number;
   artist_name: string;
@@ -25,7 +25,7 @@ interface JamendoTrack {
 interface JamendoArtist {
   id: string;
   name: string;
-  image: string;
+  image?: string;
   joindate: string;
   website?: string;
   shorturl?: string;
@@ -57,30 +57,33 @@ export class SearchService {
     }).pipe(
       map(results => {
         const combinedResults: SearchResult[] = [];
-        
+
         // Add tracks to results
-        if (results.tracks?.results) {
+        if (results.tracks?.results?.length) {
           combinedResults.push(...results.tracks.results.map((track: JamendoTrack) => ({
             id: track.id,
             name: track.name,
             type: 'track' as const,
-            imageUrl: track.image
+            imageUrl: track.image || 'default-track-image-url'
           })));
         }
-        
+
         // Add artists to results
-        if (results.artists?.results) {
+        if (results.artists?.results?.length) {
           combinedResults.push(...results.artists.results.map((artist: JamendoArtist) => ({
             id: artist.id,
             name: artist.name,
             type: 'artist' as const,
-            imageUrl: artist.image
+            imageUrl: artist.image || 'default-artist-image-url'
           })));
         }
-        
+
         return combinedResults;
       }),
-      catchError(this.handleError)
+      catchError((error) => {
+        console.error('Search error:', error);
+        return this.handleError(error);
+      })
     );
   }
 
@@ -93,8 +96,8 @@ export class SearchService {
   }
 
   private searchArtists(query: string): Observable<JamendoArtistResponse> {
-    return this.http.get<JamendoArtistResponse>(`${this.artistApiUrl}/artists`, {
-      params: { search: query }
+    return this.http.get<JamendoArtistResponse>(`${this.artistApiUrl}/search`, {
+      params: { query }
     }).pipe(
       catchError(this.handleError)
     );

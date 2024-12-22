@@ -9,6 +9,7 @@ import { SearchService, SearchResult } from '../services/search.service';
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
+  providers: [],
   standalone: true,
   imports: [CommonModule, RouterModule, FormsModule]
 })
@@ -111,5 +112,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.searchResults = [];
     this.showResults = false;
     this.error = null;
+  }
+
+  getResultsByType(type: 'track' | 'artist'): SearchResult[] {
+    return this.searchResults.filter(result => result.type === type);
   }
 }

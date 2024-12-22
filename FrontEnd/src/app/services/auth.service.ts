@@ -12,7 +12,7 @@ export interface AuthResponse {
     profilePicture?: string;
   };
   message: string;
-  userId?: string; // Added for backward compatibility
+  userId?: string; 
 }
 
 @Injectable({
@@ -108,19 +108,7 @@ export class AuthService {
     );
   }
 
-  forgotPassword(email: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/forgot-password`, { email })
-      .pipe(
-        catchError(this.handleError)
-      );
-  }
-
-  resetPassword(token: string, newPassword: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/reset-password`, { token, newPassword })
-      .pipe(
-        catchError(this.handleError)
-      );
-  }
+ 
 
   private getAuthHeaders(): HttpHeaders {
     const token = localStorage.getItem('token');
@@ -132,13 +120,5 @@ export class AuthService {
     });
   }
 
-  private handleError(error: HttpErrorResponse) {
-    console.error('An error occurred:', error);
-    if (error.error instanceof ErrorEvent) {
-      console.error('An error happened:', error.error.message);
-    } else {
-      console.error(`Backend returned code ${error.status}, body was: ${error.error}`);
-    }
-    return throwError(() => error);
-  }
+ 
 }

@@ -28,15 +28,51 @@
             <div class="no-results" *ngIf="!error && searchResults.length === 0 && searchQuery">
                 No results found for "{{ searchQuery }}"
             </div>
-            <div class="result-item" 
-                 *ngFor="let result of searchResults"
-                 (click)="selectResult(result)">
-                <img [src]="result.imageUrl" *ngIf="result.imageUrl" alt="thumbnail" class="result-image">
-                <div class="result-info">
-                    <span class="result-name">{{result.name}}</span>
-                    <span class="result-type">{{result.type}}</span>
+            
+            <!-- Group results by type -->
+            <ng-container *ngIf="searchResults.length > 0">
+                <!-- Tracks Section -->
+                <div class="result-section" *ngIf="getResultsByType('track').length > 0">
+                    <div class="section-header">
+                        <i class='bx bx-music'></i>
+                        <span>Tracks</span>
+                    </div>
+                    <div class="result-item" 
+                         *ngFor="let result of getResultsByType('track')"
+                         (click)="selectResult(result)">
+                        <img [src]="result.imageUrl" 
+                             *ngIf="result.imageUrl" 
+                             alt="track" 
+                             class="result-image"
+                             onerror="this.src='assets/images/default-track.png'">
+                        <div class="result-info">
+                            <span class="result-name">{{result.name}}</span>
+                            <span class="result-subtitle">Track</span>
+                        </div>
+                    </div>
                 </div>
-            </div>
+
+                <!-- Artists Section -->
+                <div class="result-section" *ngIf="getResultsByType('artist').length > 0">
+                    <div class="section-header">
+                        <i class='bx bx-user'></i>
+                        <span>Artists</span>
+                    </div>
+                    <div class="result-item" 
+                         *ngFor="let result of getResultsByType('artist')"
+                         (click)="selectResult(result)">
+                        <img [src]="result.imageUrl" 
+                             *ngIf="result.imageUrl" 
+                             alt="artist" 
+                             class="result-image"
+                             onerror="this.src='assets/images/default-artist.png'">
+                        <div class="result-info">
+                            <span class="result-name">{{result.name}}</span>
+                            <span class="result-subtitle">Artist</span>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
         </div>
     </div>
 </div>
