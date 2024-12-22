@@ -1,7 +1,76 @@
+@import '@angular/material/prebuilt-themes/purple-green.css';
+
 body {
     background-color: #0F0C12;
     color: white;             /* White text for contrast */
     margin: 0;                /* Remove default margins */
     padding: 0;               /* Remove default padding */
     font-family: Arial, sans-serif;  /* Set a default font */
+}
+
+/* Custom Dialog Styles */
+.custom-dialog-container {
+  backdrop-filter: blur(8px);
+}
+
+.custom-dialog-container .mat-mdc-dialog-container {
+  --mdc-dialog-container-color: transparent !important;
+}
+
+.btn:hover {
+    background-color: #1ed760;
+}
+
+/* Input styles */
+.input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #282828;
+    border-radius: 4px;
+    background-color: #282828;
+    color: white;
+}
+
+.input:focus {
+    outline: none;
+    border-color: #1DB954;
+}
+
+/* Card styles */
+.card {
+    background-color: #282828;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+/* Text styles */
+.text-primary {
+    color: #1DB954;
+}
+
+.text-secondary {
+    color: #b3b3b3;
+}
+
+/* Loading spinner */
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+}
+
+/* Error message */
+.error-message {
+    color: #ff4444;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Success message */
+.success-message {
+    color: #1DB954;
+    text-align: center;
+    padding: 20px;
 }

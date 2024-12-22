@@ -4,11 +4,18 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { RouterModule } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
+
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, RouterModule],
+  imports: [
+    ReactiveFormsModule, 
+    CommonModule, 
+    RouterModule,
+    HttpClientModule
+  ],
   providers: [AuthService], 
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
@@ -40,7 +47,7 @@ export class LoginComponent  {
           if (response.token && response.user) {
             console.log('Login successful!');
             this.loginError = null;
-            this.router.navigate([`/profile/${response.user.id}`]);
+            this.router.navigate([`/home-app`]);
           } else {
             this.loginError = 'Login failed. Please check your credentials.';
           }

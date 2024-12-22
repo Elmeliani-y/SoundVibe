@@ -5,11 +5,20 @@ import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';  
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-sign-up',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, MatSnackBarModule],
+  imports: [
+    CommonModule, 
+    RouterModule, 
+    ReactiveFormsModule, 
+    MatSnackBarModule,
+    HttpClientModule
+  ],
+  providers: [AuthService], 
+
   templateUrl: './sign-up.component.html',
   styleUrls: ['./sign-up.component.css']
 })
@@ -67,8 +76,8 @@ export class SignUpComponent {
             verticalPosition: 'top'
           });
 
-          // Navigate to choose-artist page instead of login
-          this.router.navigate(['/choose-artist']).then(
+          // Navigate to login page
+          this.router.navigate(['/login']).then(
             () => {
               console.log('Successfully navigated to choose-artist page');
             },
