@@ -48,11 +48,10 @@
     
 
    <!-- Albums Section Title -->
-<h1 class="main-title">Albums</h1>
 
 <!-- Albums Section -->
 <section class="section albums-section" *ngIf="favoriteArtistAlbums?.length && favoriteArtistAlbums[0]?.albums?.length">
-  <h2 class="section-title">Your Favorite Artists' Albums</h2>
+  <h2 class="section-title">Favorite Artists' Albums</h2>
   <div class="albums-grid">
     <ng-container *ngIf="favoriteArtistAlbums[0]?.albums">
       <div class="album-card" *ngFor="let album of favoriteArtistAlbums[0].albums">
@@ -99,5 +98,4 @@
       <p>No music content available at the moment</p>
     </div>
   </div>
-  <app-music-player></app-music-player>
 </div>

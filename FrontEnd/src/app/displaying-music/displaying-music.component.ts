@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, finalize } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { MusicPlayerComponent } from '../music-player/music-player.component';
 import { CommonModule } from '@angular/common';
 
 interface Track {
@@ -48,7 +47,7 @@ interface ArtistAlbums {
 @Component({
   selector: 'app-displaying-music',
   standalone: true,
-  imports: [CommonModule,MusicPlayerComponent],
+  imports: [CommonModule],
   templateUrl: './displaying-music.component.html',
   styleUrls: ['./displaying-music.component.css']
 })
@@ -111,7 +110,7 @@ export class DisplayingMusicComponent implements OnInit {
         return of({ results: [] });
       })
     ).subscribe(response => {
-      this.favoriteTracks = response.results.slice(0, 8).map((track: any) => ({
+      this.favoriteTracks = response.results.map((track: any) => ({
         id: track.id,
         name: track.name,
         artist_name: track.artist_name,

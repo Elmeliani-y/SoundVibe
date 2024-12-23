@@ -33,7 +33,7 @@ app.get('/music/favorite-artist-tracks/:userId', async (req, res) => {
             params: {
                 client_id: JAMENDO_CLIENT_ID,
                 format: 'json',
-                limit: 8,
+                limit: 9,
                 tags: user.musicStyle
             }
         });
