@@ -22,7 +22,7 @@ export const routes: Routes = [
     title:'choose Artists'
   },
   {
-    path: 'home-app',
+    path: 'app-home',
     component: HomeAppComponent, 
     title: 'home',
   },

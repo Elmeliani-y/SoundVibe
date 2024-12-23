@@ -8,8 +8,7 @@ const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const crypto = require('crypto');
-const nodemailer = require('nodemailer');
+const verifyJWT = require('./middlewear/index');
 
 dotenv.config();
 const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
@@ -61,115 +60,48 @@ const upload = multer({
 // Serve static files from uploads directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Middleware to verify JWT token
-const verifyJWT = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  console.log('Auth header:', authHeader);
-  
-  if (!authHeader) {
-    console.log('No authorization header');
-    return res.status(401).json({ message: 'No token provided' });
-  }
-
-  const token = authHeader.split(' ')[1];
-  if (!token) {
-    console.log('No token in auth header');
-    return res.status(401).json({ message: 'No token provided' });
-  }
-
-  try {
-    console.log('Verifying token...');
-    const decoded = jwt.verify(token, process.env.SECRET_KEY);
-    console.log('Token verified:', decoded);
-    req.user = decoded;
-    next();
-  } catch (error) {
-    console.error('Token verification failed:', error);
-    return res.status(403).json({ message: 'Invalid token' });
-  }
-};
-
-// Create email transporter
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  },
-  tls: {
-    rejectUnauthorized: false
-  }
-});
-
 // Sign-up endpoint
 app.post('/sign-up', async (req, res) => {
   try {
-    console.log('\n=== New Signup Request ===');
-    console.log('Request body:', req.body);
     const { name, lastname, email, password, musicStyle } = req.body;
+    console.log('Signup attempt for:', { email, name, lastname, hasPassword: !!password });
 
-    // Validate required fields
-    if (!name || !lastname || !email || !password) {
-      console.log('Missing required fields');
-      return res.status(400).json({ 
-        message: 'All fields are required: name, lastname, email, password' 
-      });
+    if (!email || !password || !name || !lastname) {
+      return res.status(400).json({ message: 'All fields are required' });
     }
 
     // Check if user already exists
-    console.log('Checking if user exists with email:', email);
     const existingUser = await userModel.findOne({ email });
     if (existingUser) {
-      console.log('User already exists:', email);
-      return res.status(400).json({ message: 'User already exists with this email' });
+      return res.status(400).json({ message: 'Email already exists' });
     }
-    console.log('No existing user found, proceeding with signup');
 
-    // Hash password
-    console.log('Hashing password...');
-    const hashedPassword = await bcrypt.hash(password, 10);
-    console.log('Password hashed successfully');
-
-    // Create new user
-    console.log('Creating new user document...');
+    // Create new user - password will be hashed by the schema pre-save hook
     const user = new userModel({
       name,
       lastname,
       email,
-      password: hashedPassword,
+      password, // Schema will hash this
       musicStyle: musicStyle || '',
-      profilePicture: null,
-      favArtists: []
+      profilePicture: null
     });
 
     // Save user to database
-    console.log('Attempting to save user to database...');
-    try {
-      const savedUser = await user.save();
-      console.log('User saved successfully. Document:', {
-        id: savedUser._id,
-        email: savedUser.email,
-        name: savedUser.name,
-        lastname: savedUser.lastname
-      });
-    } catch (saveError) {
-      console.error('Error saving user to database:', saveError);
-      throw saveError;
-    }
+    await user.save();
+    console.log('User saved successfully:', {
+      userId: user._id,
+      email: user.email,
+      name: user.name
+    });
 
     // Generate token
-    console.log('Generating JWT token...');
     const token = jwt.sign(
       { id: user._id, email: user.email },
       process.env.SECRET_KEY,
       { expiresIn: '24h' }
     );
-    console.log('Token generated successfully');
 
     // Send response
-    console.log('Sending success response...');
     res.status(201).json({ 
       message: 'User created successfully',
       token,
@@ -177,14 +109,13 @@ app.post('/sign-up', async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
+        lastname: user.lastname,
+        musicStyle: user.musicStyle,
         profilePicture: user.profilePicture
       }
     });
-    console.log('=== Signup Complete ===\n');
   } catch (error) {
-    console.error('\n=== Signup Error ===');
-    console.error('Error details:', error);
-    console.error('Full error object:', JSON.stringify(error, null, 2));
+    console.error('Signup error:', error);
     if (error.code === 11000) {
       return res.status(400).json({ message: 'Email already exists' });
     }
@@ -196,36 +127,57 @@ app.post('/sign-up', async (req, res) => {
 app.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log('Login attempt for email:', email);
+    console.log('Login attempt received:', { email, hasPassword: !!password });
+
+    if (!email || !password) {
+      console.log('Missing credentials:', { email: !!email, password: !!password });
+      return res.status(400).json({ message: 'Email and password are required' });
+    }
 
     const user = await userModel.findOne({ email });
     if (!user) {
-      console.log('User not found');
+      console.log('User not found for email:', email);
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
-    const validPassword = await bcrypt.compare(password, user.password);
+    console.log('User found, comparing passwords');
+    const validPassword = await user.comparePassword(password);
     if (!validPassword) {
-      console.log('Invalid password');
+      console.log('Invalid password for user:', email);
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
+    console.log('Password valid, generating token');
     const token = jwt.sign(
       { id: user._id, email: user.email },
       process.env.SECRET_KEY,
       { expiresIn: '24h' }
     );
 
-    console.log('Login successful, token generated');
-    res.json({ token, user: { 
-      id: user._id,
-      name: user.name,
+    console.log('Login successful for user:', {
       email: user.email,
-      profilePicture: user.profilePicture
-    }});
+      userId: user._id,
+      tokenGenerated: !!token
+    });
+
+    res.json({ 
+      token, 
+      user: { 
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        lastname: user.lastname,
+        musicStyle: user.musicStyle,
+        profilePicture: user.profilePicture,
+        favArtists: user.favArtists
+      }
+    });
   } catch (error) {
     console.error('Login error:', error);
-    res.status(500).json({ message: 'Error logging in' });
+    res.status(500).json({ 
+      message: 'Error logging in',
+      error: error.message 
+    });
   }
 });
 
@@ -341,118 +293,134 @@ app.put('/update', verifyJWT, upload.single('profilePicture'), async (req, res) 
   }
 });
 
-// Forgot Password endpoint
-app.post('/forgot-password', async (req, res) => {
+// Add artist to favorites
+app.post('/artists/:id/favorite', verifyJWT, async (req, res) => {
   try {
-    const { email } = req.body;
-    
-    if (!email) {
-      return res.status(400).json({ message: 'Email is required' });
-    }
+    const artistId = req.params.id;
+    const userId = req.user.id;
+    const { name, image } = req.body; // Get artist details from request body
 
-    console.log('Searching for user with email:', email);
-    
-    // Find user by email
-    const user = await userModel.findOne({ email });
+    console.log(`Adding artist ${artistId} to favorites for user ${userId}`);
+
+    // Find the user by ID
+    const user = await userModel.findById(userId);
     if (!user) {
-      console.log('User not found');
+      console.log('User not found:', userId);
       return res.status(404).json({ message: 'User not found' });
     }
 
-    console.log('User found, generating reset token');
+    // Check if artist is already in favorites
+    if (user.favArtists.some(artist => artist.artistId === artistId)) {
+      console.log('Artist already in favorites:', artistId);
+      return res.status(400).json({ message: 'Artist already in favorites' });
+    }
 
-    // Generate password reset token
-    const resetToken = crypto.randomBytes(32).toString('hex');
-    user.resetPasswordToken = resetToken;
-    user.resetPasswordExpires = new Date(Date.now() + 3600000); // Token expires in 1 hour
+    // Add artist to favorites array with full details
+    user.favArtists.push({
+      artistId,
+      name,
+      image,
+      addedAt: new Date()
+    });
     
-    console.log('Saving user with reset token');
+    // Save the updated user document
     await user.save();
+    console.log('Successfully added artist to favorites:', {
+      userId: user._id,
+      artistId: artistId,
+      artistName: name,
+      totalFavorites: user.favArtists.length
+    });
 
-    // Create reset URL
-    const resetUrl = `http://localhost:4200/reset-password?token=${resetToken}`;
-    
-    console.log('Preparing email');
-    // Send email
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: user.email,
-      subject: 'Password Reset Request - SoundVibe',
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h1 style="color: #C969E6;">Reset Your Password</h1>
-          <p>You requested a password reset for your SoundVibe account.</p>
-          <p>Click the link below to reset your password. This link will expire in 1 hour.</p>
-          <a href="${resetUrl}" style="display: inline-block; background: #C969E6; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin: 20px 0;">Reset Password</a>
-          <p style="color: #666;">If you didn't request this, please ignore this email.</p>
-          <hr style="border: 1px solid #eee; margin: 20px 0;">
-          <p style="color: #888; font-size: 12px;">This is an automated email from SoundVibe. Please do not reply.</p>
-        </div>
-      `
-    };
-
-    console.log('Sending email');
-    await transporter.sendMail(mailOptions);
-    console.log('Email sent successfully');
-    
     res.json({ 
-      message: 'Password reset email sent',
-      success: true
+      message: 'Artist added to favorites', 
+      favArtists: user.favArtists,
+      userId: user._id
     });
   } catch (error) {
-    console.error('Forgot password error:', error);
+    console.error('Error adding artist to favorites:', error);
     res.status(500).json({ 
-      message: 'Error processing request',
+      message: 'Error adding artist to favorites',
       error: error.message 
     });
   }
 });
 
-// Reset Password endpoint
-app.post('/reset-password', async (req, res) => {
+// Remove artist from favorites
+app.post('/artists/:id/unfavorite', verifyJWT, async (req, res) => {
   try {
-    const { token, newPassword } = req.body;
+    const artistId = req.params.id;
+    const userId = req.user.id;
 
-    // Find user with valid reset token
-    const user = await userModel.findOne({
-      resetPasswordToken: token,
-      resetPasswordExpires: { $gt: Date.now() }
-    });
+    console.log(`Removing artist ${artistId} from favorites for user ${userId}`);
 
+    // Find the user by ID
+    const user = await userModel.findById(userId);
     if (!user) {
-      return res.status(400).json({
-        message: 'Password reset token is invalid or has expired'
-      });
+      console.log('User not found:', userId);
+      return res.status(404).json({ message: 'User not found' });
     }
 
-    // Hash the new password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(newPassword, salt);
+    // Check if artist is in favorites
+    const initialLength = user.favArtists.length;
+    user.favArtists = user.favArtists.filter(artist => artist.artistId !== artistId);
+    
+    if (user.favArtists.length === initialLength) {
+      console.log('Artist not in favorites:', artistId);
+      return res.status(400).json({ message: 'Artist not in favorites' });
+    }
 
-    // Update user's password and clear reset token
-    user.password = hashedPassword;
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpires = undefined;
+    // Save the updated user document
     await user.save();
+    console.log('Successfully removed artist from favorites:', {
+      userId: user._id,
+      artistId: artistId,
+      totalFavorites: user.favArtists.length
+    });
 
-    // Send confirmation email
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: user.email,
-      subject: 'Password Reset Successful',
-      html: `
-        <h1>Password Reset Successful</h1>
-        <p>Your password has been successfully reset.</p>
-        <p>If you didn't make this change, please contact support immediately.</p>
-      `
-    };
-
-    await transporter.sendMail(mailOptions);
-
-    res.json({ message: 'Password has been reset' });
+    res.json({ 
+      message: 'Artist removed from favorites', 
+      favArtists: user.favArtists,
+      userId: user._id
+    });
   } catch (error) {
-    console.error('Reset password error:', error);
-    res.status(500).json({ message: 'Error resetting password' });
+    console.error('Error removing artist from favorites:', error);
+    res.status(500).json({ 
+      message: 'Error removing artist from favorites',
+      error: error.message 
+    });
+  }
+});
+
+// Get favorite artists for current user
+app.get('/artists/favorites', verifyJWT, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    console.log('Fetching favorite artists for user:', userId);
+
+    // Find the user and populate their favorite artists
+    const user = await userModel.findById(userId);
+    if (!user) {
+      console.log('User not found:', userId);
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    console.log('Found favorite artists:', {
+      userId: user._id,
+      totalFavorites: user.favArtists.length,
+      artists: user.favArtists
+    });
+
+    res.json({ 
+      favArtists: user.favArtists,
+      userId: user._id
+    });
+  } catch (error) {
+    console.error('Error fetching favorite artists:', error);
+    res.status(500).json({ 
+      message: 'Error fetching favorite artists',
+      error: error.message 
+    });
   }
 });
 
@@ -464,155 +432,6 @@ app.post('/logout', (req, res) => {
         }
         res.json({ message: 'User logged out successfully' });
     });
-});
-
-// Favorite and Unfavorite Artist Routes
-app.post(`/artists/:artistid/favorite`, verifyJWT, async (req, res) => {
-    const { artistid } = req.params;
-    try {
-        console.log('\n=== Adding Artist to Favorites ===');
-        console.log('Artist ID:', artistid);
-        console.log('User ID from token:', req.user.id);
-        console.log('User email from token:', req.user.email);
-        
-        // First try to find the user
-        const user = await userModel.findById(req.user.id);
-        console.log('Found user:', user ? {
-            id: user._id,
-            email: user.email,
-            favArtists: user.favArtists
-        } : 'No user found');
-        
-        if (!user) {
-            console.log('User not found in database');
-            return res.status(404).json({ message: 'User not found' });
-        }
-
-        // Initialize favArtists if it doesn't exist
-        if (!user.favArtists) {
-            console.log('Initializing favArtists array');
-            user.favArtists = [];
-        }
-
-        console.log('Current favorite artists:', user.favArtists);
-        
-        // Check if artist is not already in favorites
-        if (!user.favArtists.includes(artistid)) {
-            console.log('Adding new artist to favorites');
-            // Add the artist ID to favorites
-            user.favArtists.push(artistid);
-            console.log('Updated favorite artists:', user.favArtists);
-            
-            // Mark the field as modified
-            user.markModified('favArtists');
-            console.log('Marked favArtists as modified');
-            
-            try {
-                // Save the changes
-                const savedUser = await user.save();
-                console.log('Successfully saved user. Updated document:', {
-                    id: savedUser._id,
-                    email: savedUser.email,
-                    favArtists: savedUser.favArtists
-                });
-            } catch (saveError) {
-                console.error('Error saving user:', saveError);
-                throw saveError;
-            }
-        } else {
-            console.log('Artist already in favorites');
-        }
-        
-        res.json({ 
-            message: 'Artist added to favorites',
-            favArtists: user.favArtists 
-        });
-    } catch (error) {
-        console.error('Error in /favorite endpoint:', error);
-        console.error('Full error object:', JSON.stringify(error, null, 2));
-        res.status(500).json({ 
-            message: error.message,
-            stack: error.stack 
-        });
-    }
-});
-
-app.post(`/artists/:artistid/unfavorite`, verifyJWT, async (req, res) => {
-    const { artistid } = req.params;
-    try {
-        console.log('=== Removing Artist from Favorites ===');
-        console.log('Artist ID:', artistid);
-        console.log('User from token:', req.user);
-        
-        const user = await userModel.findById(req.user.id);
-        console.log('Found user:', user ? 'Yes' : 'No');
-        
-        if (!user) {
-            console.log('User not found in database');
-            return res.status(404).json({ message: 'User not found' });
-        }
-
-        // Initialize favArtists if it doesn't exist
-        if (!user.favArtists) {
-            console.log('Initializing favArtists array');
-            user.favArtists = [];
-        }
-
-        console.log('Current favorite artists:', user.favArtists);
-        
-        // Remove the artist ID from favorites
-        const initialLength = user.favArtists.length;
-        user.favArtists = user.favArtists.filter(id => id !== artistid);
-        console.log('Updated favorite artists:', user.favArtists);
-        
-        if (user.favArtists.length !== initialLength) {
-            // Mark the field as modified
-            user.markModified('favArtists');
-            console.log('Marked favArtists as modified');
-            
-            // Save the changes
-            await user.save();
-            console.log('Successfully saved user');
-        } else {
-            console.log('Artist was not in favorites');
-        }
-        
-        res.json({ 
-            message: 'Artist removed from favorites',
-            favArtists: user.favArtists 
-        });
-    } catch (error) {
-        console.error('Error in /unfavorite endpoint:', error);
-        console.error('Full error object:', JSON.stringify(error, null, 2));
-        res.status(500).json({ 
-            message: error.message,
-            stack: error.stack 
-        });
-    }
-});
-
-app.get('/favorite-artists', verifyJWT, async (req, res) => {
-    try {
-        console.log('=== Getting Favorite Artists ===');
-        console.log('User from token:', req.user);
-        
-        const user = await userModel.findById(req.user.id);
-        console.log('Found user:', user ? 'Yes' : 'No');
-        
-        if (!user) {
-            console.log('User not found in database');
-            return res.status(404).json({ message: 'User not found' });
-        }
-
-        console.log('User favorite artists:', user.favArtists);
-        
-        res.json({ 
-            favArtists: user.favArtists || [] 
-        });
-    } catch (error) {
-        console.error('Error getting favorite artists:', error);
-        res.status(500).json({ message: error.message });
-    }
 });
 
 // Like and Unlike Playlist Routes

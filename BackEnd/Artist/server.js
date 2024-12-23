@@ -8,15 +8,23 @@ const bodyParser = require('body-parser');
 const app = express();
 const port = process.env.PORT4 || 3003;
 
-// MongoDB connection
-mongoose.connect('mongodb://localhost:27017/SoundVibe', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}).then(() => {
-    console.log('Connected to MongoDB');
-}).catch(err => {
-    console.error('MongoDB connection error:', err);
+// Create FavArtist Schema
+const favArtistSchema = new mongoose.Schema({
+    userId: { type: String, required: true }, // We'll add user authentication later
+    artists: [{
+        id: String,
+        name: String,
+        image: String,
+        joindate: String,
+        website: String,
+        shorturl: String,
+        shareurl: String
+    }],
+    createdAt: { type: Date, default: Date.now }
 });
+
+const FavArtist = mongoose.model('FavArtist', favArtistSchema);
+
 
 app.use(cors({
     origin: 'http://localhost:4200',
@@ -102,6 +110,97 @@ app.get('/artists', async (req, res) => {
             message: 'Internal Server Error',
             error: error.message,
             clientId: JAMENDO_CLIENT_ID
+        });
+    }
+});
+
+// Route to search artists
+app.get('/search', async (req, res) => {
+    const { query } = req.query;
+    
+    if (!query) {
+        return res.status(400).json({ message: 'Search query is required' });
+    }
+
+    try {
+        const response = await axios.get(`${JAMENDO_API_URL}/artists/`, {
+            params: {
+                client_id: JAMENDO_CLIENT_ID,
+                format: 'json',
+                limit: 10,
+                name: query,
+                imagesize: 200
+            }
+        });
+
+        res.json(response.data);
+    } catch (error) {
+        console.error('Error searching artists:', error);
+        res.status(500).json({ 
+            message: 'Error searching artists',
+            error: error.response?.data || error.message 
+        });
+    }
+});
+
+// Route to save favorite artists
+app.post('/favartists', async (req, res) => {
+    try {
+        const { artists } = req.body;
+        
+        if (!artists || !Array.isArray(artists)) {
+            return res.status(400).json({ message: 'Invalid artists data' });
+        }
+
+        // For now, using a temporary userId. Later, this should come from authentication
+        const tempUserId = 'temp-user-id';
+
+        // Check if user already has favorite artists
+        let userFavArtists = await FavArtist.findOne({ userId: tempUserId });
+
+        if (userFavArtists) {
+            // Update existing favorites
+            userFavArtists.artists = artists;
+            await userFavArtists.save();
+        } else {
+            // Create new favorites document
+            userFavArtists = new FavArtist({
+                userId: tempUserId,
+                artists: artists
+            });
+            await userFavArtists.save();
+        }
+
+        res.status(201).json({
+            message: 'Favorite artists saved successfully',
+            data: userFavArtists
+        });
+
+    } catch (error) {
+        console.error('Error saving favorite artists:', error);
+        res.status(500).json({
+            message: 'Error saving favorite artists',
+            error: error.message
+        });
+    }
+});
+
+// Route to get favorite artists
+app.get('/favartists/:userId', async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const userFavArtists = await FavArtist.findOne({ userId });
+
+        if (!userFavArtists) {
+            return res.status(404).json({ message: 'No favorite artists found' });
+        }
+
+        res.json(userFavArtists.artists);
+    } catch (error) {
+        console.error('Error fetching favorite artists:', error);
+        res.status(500).json({
+            message: 'Error fetching favorite artists',
+            error: error.message
         });
     }
 });

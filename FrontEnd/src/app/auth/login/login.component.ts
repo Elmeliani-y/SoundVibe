@@ -47,7 +47,7 @@ export class LoginComponent  {
           if (response.token && response.user) {
             console.log('Login successful!');
             this.loginError = null;
-            this.router.navigate([`/home-app`]);
+            this.router.navigate([`/app-home`]);
           } else {
             this.loginError = 'Login failed. Please check your credentials.';
           }

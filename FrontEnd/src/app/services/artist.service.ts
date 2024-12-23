@@ -68,13 +68,29 @@ export class ArtistService {
    * @returns Observable<any> - The response from the backend
    */
   addToFavorites(artist: Artist): Observable<any> {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      return throwError(() => new Error('Authentication token not found. Please log in again.'));
+    }
+
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
     });
-    return this.http.post(`${this.userApiUrl}/artists/${artist.id}/favorite`, {}, { headers }).pipe(
+    
+    // Send artist details in the request body
+    const body = {
+      name: artist.name,
+      image: artist.image
+    };
+
+    return this.http.post(`${this.userApiUrl}/artists/${artist.id}/favorite`, body, { headers }).pipe(
       catchError(error => {
         console.error('Error adding artist to favorites:', error);
-        return throwError(() => new Error('Failed to add artist to favorites'));
+        if (error.status === 401 || error.status === 403) {
+          return throwError(() => new Error('Please log in to add artists to favorites'));
+        }
+        return throwError(() => new Error('Failed to add artist to favorites. Please try again.'));
       })
     );
   }
