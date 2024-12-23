@@ -109,6 +109,13 @@ export class ChooseArtistComponent implements OnInit {
       this.isSaving = true;
       this.errorMessage = '';
       
+      // Show loading message
+      this.snackBar.open('Saving your favorite artists...', 'Close', {
+        duration: 2000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top'
+      });
+
       // Use forkJoin to handle multiple requests
       const addFavoriteRequests = this.selectedArtists.map(artist => 
         this.artistService.addToFavorites(artist)
@@ -128,12 +135,27 @@ export class ChooseArtistComponent implements OnInit {
           });
 
           // Navigate to the home-app page
-          this.router.navigate(['/home-app']);
+          this.router.navigate(['/app-home']);
         },
         error: (error) => {
           console.error('Error saving favorite artists:', error);
-          this.errorMessage = 'Failed to save favorite artists. Please try again.';
           this.isSaving = false;
+
+          // Show specific error message
+          const errorMessage = error.message || 'Failed to save favorite artists. Please try again.';
+          this.errorMessage = errorMessage;
+          
+          this.snackBar.open(errorMessage, 'Close', {
+            duration: 5000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+            panelClass: ['error-snackbar']
+          });
+
+          // If it's an authentication error, redirect to login
+          if (errorMessage.includes('log in') || errorMessage.includes('token')) {
+            this.router.navigate(['/login']);
+          }
         }
       });
     }

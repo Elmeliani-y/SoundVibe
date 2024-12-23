@@ -1,5 +1,8 @@
 const jwt = require('jsonwebtoken');
-const SECRET_KEY = 'your-secret-key'; // Make sure this matches the key used to sign the token
+const dotenv = require('dotenv');
+
+// Load environment variables
+dotenv.config();
 
 const verifyJWT = (req, res, next) => {
     const token = req.header('Authorization')?.split(' ')[1];
@@ -10,7 +13,7 @@ const verifyJWT = (req, res, next) => {
     }
 
     try {
-        const verified = jwt.verify(token, SECRET_KEY);
+        const verified = jwt.verify(token, process.env.SECRET_KEY);
         console.log('Token verified successfully:', verified);
         req.user = verified;
         next();

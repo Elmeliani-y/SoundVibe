@@ -26,16 +26,6 @@ const favArtistSchema = new mongoose.Schema({
 const FavArtist = mongoose.model('FavArtist', favArtistSchema);
 
 
-// MongoDB connection
-mongoose.connect('mongodb://localhost:27017/SoundVibe', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}).then(() => {
-    console.log('Connected to MongoDB');
-}).catch(err => {
-    console.error('MongoDB connection error:', err);
-});
-
 app.use(cors({
     origin: 'http://localhost:4200',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
