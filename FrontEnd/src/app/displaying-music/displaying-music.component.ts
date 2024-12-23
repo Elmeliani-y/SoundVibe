@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { catchError, finalize } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { MusicPlayerComponent } from '../music-player/music-player.component';
+import { CommonModule } from '@angular/common';
 
 interface Track {
   id: string;
@@ -47,7 +48,7 @@ interface ArtistAlbums {
 @Component({
   selector: 'app-displaying-music',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,MusicPlayerComponent],
   templateUrl: './displaying-music.component.html',
   styleUrls: ['./displaying-music.component.css']
 })

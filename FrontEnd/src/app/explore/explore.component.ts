@@ -3,12 +3,13 @@ import { SidebarComponentComponent } from "../sidebar-component/sidebar-componen
 import { NavbarComponent } from '../navbar/navbar.component';
 import { MusicPlayerComponent } from '../music-player/music-player.component';
 
+
 @Component({
   selector: 'app-explore',
   standalone: true,
   imports: [NavbarComponent, SidebarComponentComponent,MusicPlayerComponent],
   templateUrl: './explore.component.html',
-  styleUrl: './explore.component.css'
+  styleUrls: ['./explore.component.css']
 })
 export class ExploreComponent {
 
