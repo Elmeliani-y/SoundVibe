@@ -75,4 +75,27 @@
             </ng-container>
         </div>
     </div>
+    
+    <div class="profile-section">
+        <button class="profile-button" (click)="toggleProfileDropdown()" (blur)="closeProfileDropdown()">
+            <ng-container *ngIf="userProfilePic; else defaultIcon">
+                <img [src]="userProfilePic" alt="Profile" class="profile-pic">
+            </ng-container>
+            <ng-template #defaultIcon>
+                <i class='bx bx-user-circle'></i>
+            </ng-template>
+            <i class='bx bx-chevron-down'></i>
+        </button>
+        
+        <div class="profile-dropdown" *ngIf="showProfileDropdown">
+            <div class="dropdown-item" (click)="navigateToProfile()">
+                <i class='bx bx-user'></i>
+                <span>Profile</span>
+            </div>
+            <div class="dropdown-item" (click)="logout()">
+                <i class='bx bx-log-out'></i>
+                <span>Log out</span>
+            </div>
+        </div>
+    </div>
 </div>
