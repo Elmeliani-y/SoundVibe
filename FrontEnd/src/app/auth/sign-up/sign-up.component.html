@@ -10,57 +10,71 @@
   <h2 class="form-title">Welcome To <p>Sound<span style="color: #8B53FA;">Vibe</span></p> </h2>
 </div>
 
-<form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
-  
-  <div>
-    <label for="username">Username</label>
-    <input id="username" formControlName="username" type="text" />
-    <div *ngIf="signUpForm.get('username')?.invalid && signUpForm.get('username')?.touched">
-      Username is required and must be at least 3 characters.
+<form [formGroup]="signUpForm" (ngSubmit)="onSubmit()"> 
+  <!-- Name -->
+  <div class="form-field">
+    <label for="name">Name</label>
+    <input id="name" formControlName="name" type="text" />
+    <div *ngIf="signUpForm.get('name')?.invalid && signUpForm.get('name')?.touched">
+      Name is required.
+    </div>
+  </div>
+  <!-- lastname -->
+  <div class="form-field">
+    <label for="lastname">lastname</label>
+    <input id="lastname" formControlName="lastname" type="text"   autocomplete="lastname"    />
+    <div *ngIf="signUpForm.get('lastname')?.invalid && signUpForm.get('lastname')?.touched">
+      lastname is required and must be at least 3 characters.
     </div>
   </div>
 
-  <div>
+ 
+
+  <!-- Email -->
+  <div class="form-field">
     <label for="email">Email</label>
-    <input id="email" formControlName="email" type="email" />
+    <input id="email" formControlName="email" type="email" autocomplete="email" />
     <div *ngIf="signUpForm.get('email')?.invalid && signUpForm.get('email')?.touched">
       Please enter a valid email.
     </div>
   </div>
 
-  <div>
+  <!-- Password -->
+  <div class="form-field">
     <label for="password">Password</label>
-    <input id="password" formControlName="password" type="password" />
+    <input id="password" formControlName="password" type="password" autocomplete="new-password">
     <div *ngIf="signUpForm.get('password')?.invalid && signUpForm.get('password')?.touched">
       Password must be at least 6 characters.
     </div>
   </div>
 
-  <div>
+  <!-- Confirm Password -->
+  <div class="form-field">
     <label for="confirmPassword">Confirm Password</label>
-    <input id="confirmPassword" formControlName="confirmPassword" type="password" />
+    <input id="confirmPassword" formControlName="confirmPassword" type="password" autocomplete="new-password">
     <div *ngIf="signUpForm.hasError('mismatch')">
       Passwords do not match.
     </div>
   </div>
 
-  <div>
-    <label for="age">Age</label>
-    <input id="age" formControlName="age" type="number" />
-    <div *ngIf="signUpForm.get('age')?.invalid && signUpForm.get('age')?.touched">
-      Age must be at least 18.
+  <!-- Music Style -->
+  <div class="form-field">
+    <label for="musicStyle">Music Style</label>
+    <input id="musicStyle" formControlName="musicStyle" type="text" />
+    <div *ngIf="signUpForm.get('musicStyle')?.invalid && signUpForm.get('musicStyle')?.touched">
+      Music style is required.
     </div>
   </div>
 
+  <!-- Submit Button -->
   <button type="submit" [disabled]="signUpForm.invalid">Sign Up</button>
 
+  <!-- Error Message -->
   <div *ngIf="errorMessage" class="error">
     {{ errorMessage }}
   </div>
 </form>
 
 <div class="account-footer">
-  <p>Already have an account? <a routerLink="/login">Log in</a>
-  </p>
+  <p>Already have an account? <a routerLink="/login">Log in</a></p>
 </div>
-  

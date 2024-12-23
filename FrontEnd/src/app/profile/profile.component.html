@@ -1,69 +1,150 @@
+<app-sidebar-component></app-sidebar-component>
+
 <div class="main-container">
+<<<<<<< HEAD
+=======
+
+>>>>>>> e0b4a316b1d482360a5e51732e77a6b10324e03f
   <div class="profile-container">
-    <div class="profile-header">
-      <div class="profile-info">
-        <div class="profile-pic">
-          <img [src]="user?.profilePic || 'assets/default-profile.png'" alt="Profile Picture">
-        </div>
-        <div class="user-details">
-          <h2>{{user?.name}}</h2>
-          <p class="username">{{'@' + user?.username}}</p>
-          <p class="music-style" *ngIf="user?.musicStyle">{{user?.musicStyle}}</p>
-          
-          <button *ngIf="isCurrentUser" (click)="toggleEdit()" class="edit-btn">
-            {{isEditing ? 'Cancel' : 'Edit Profile'}}
-          </button>
-        </div>
-      </div>
-
-      <div class="edit-form-container" [class.show-form]="isEditing">
-        <form *ngIf="isCurrentUser" [formGroup]="updateForm" (ngSubmit)="onSubmit()" class="edit-form" [class.visible]="isEditing">
-          <div class="form-group">
-            <label for="name">Name</label>
-            <input id="name" type="text" formControlName="name">
-          </div>
-          
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input id="email" type="email" formControlName="email">
-          </div>
-          
-          <div class="form-group">
-            <label for="musicStyle">Music Style</label>
-            <input id="musicStyle" type="text" formControlName="musicStyle">
-          </div>
-          
-          <button type="submit" [disabled]="!updateForm.valid" class="save-btn">
-            Save Changes
-          </button>
-        </form>
-      </div>
+    <div *ngIf="loading" class="loading-spinner">
+      Loading profile...
     </div>
 
-    <div class="section">
-      <h3>Favorite Artists</h3>
-      <div class="artists-grid" *ngIf="user?.favArtists?.length; else noArtists">
-        <div class="artist-card" *ngFor="let artist of user?.favArtists">
-          <img [src]="artist.image" alt="Artist">
-          <p>{{artist.name}}</p>
-        </div>
-      </div>
-      <ng-template #noArtists>
-        <p class="no-content">No favorite artists yet.</p>
-      </ng-template>
+    <div *ngIf="error" class="error-message">
+      {{ error }}
     </div>
 
-    <div class="section">
-      <h3>Playlists</h3>
-      <div class="playlists-grid" *ngIf="user?.likedPlaylists?.length; else noPlaylists">
-        <div class="playlist-card" *ngFor="let playlist of user?.likedPlaylists">
-          <img [src]="playlist.image" alt="Playlist">
-          <p>{{playlist.name}}</p>
+    <div *ngIf="!loading && !error && user" class="profile-content">
+      <div class="profile-header">
+        <div class="profile-info">
+          <div class="profile-section">
+            <div class="profile-pic">
+              <img [src]="getProfilePictureUrl(user.profilePicture)" alt="Profile Picture">
+              <div class="profile-pic-overlay">
+                <label for="profile-pic-input" class="change-pic-btn">
+                  <i class="fas fa-camera"></i>
+                  <span>Change Picture</span>
+                </label>
+                <input 
+                  #fileInput
+                  id="profile-pic-input" 
+                  type="file" 
+                  accept="image/*"
+                  (change)="onFileSelected($event)"
+                  style="display: none">
+              </div>
+            </div>
+          </div>
+          <div class="user-details">
+            <h2>{{ user.name || 'Name not available' }}</h2>
+            <p class="lastname">{{ '@' + user.lastname }}</p>
+            <p class="music-style" *ngIf="user.musicStyle">{{ user.musicStyle }}</p>
+            
+            <button *ngIf="isCurrentUser" (click)="toggleEdit()" class="edit-btn">
+              {{ isEditing ? 'Cancel Edit' : 'Edit Profile' }}
+            </button>
+          </div>
+        </div>
+
+        <div class="edit-form-container" [class.show-form]="isEditing">
+          <form *ngIf="isCurrentUser" [formGroup]="updateForm" (ngSubmit)="onSubmit()" class="edit-form" [class.visible]="isEditing">
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input id="name" 
+                     type="text" 
+                     formControlName="name" 
+                     autocomplete="name">
+              <div class="error-message" *ngIf="updateForm.get('name')?.invalid && updateForm.get('name')?.touched">
+                Name is required
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input id="email" 
+                     type="email" 
+                     formControlName="email" 
+                     autocomplete="email">
+              <div class="error-message" *ngIf="updateForm.get('email')?.invalid && updateForm.get('email')?.touched">
+                Please enter a valid email
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="musicStyle">Music Style</label>
+              <input id="musicStyle" 
+                     type="text" 
+                     formControlName="musicStyle">
+            </div>
+
+            <div class="form-group">
+              <label for="currentPassword">Current Password (required to save changes)</label>
+              <input id="currentPassword" 
+                     type="password" 
+                     formControlName="currentPassword"
+                     autocomplete="current-password">
+              <div class="error-message" *ngIf="updateForm.get('currentPassword')?.invalid && updateForm.get('currentPassword')?.touched">
+                Current password is required to save changes
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="newPassword">New Password (optional)</label>
+              <input id="newPassword" 
+                     type="password" 
+                     formControlName="newPassword"
+                     autocomplete="new-password">
+              <div class="error-message" *ngIf="updateForm.get('newPassword')?.invalid && updateForm.get('newPassword')?.touched">
+                Password must be at least 6 characters
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="confirmNewPassword">Confirm New Password</label>
+              <input id="confirmNewPassword" 
+                     type="password" 
+                     formControlName="confirmNewPassword"
+                     autocomplete="new-password">
+              <div class="error-message" *ngIf="updateForm.get('confirmNewPassword')?.invalid && updateForm.get('confirmNewPassword')?.touched">
+                Passwords must match
+              </div>
+            </div>
+            
+            <div class="button-container">
+              <button type="button" (click)="toggleEdit()" class="cancel-btn">Cancel</button>
+              <button type="submit" class="save-btn" [disabled]="updateForm.invalid || loading">
+                {{ loading ? 'Saving...' : 'Save Changes' }}
+              </button>
+            </div>
+          </form>
         </div>
       </div>
-      <ng-template #noPlaylists>
-        <p class="no-content">No playlists yet.</p>
-      </ng-template>
+
+      <div class="section">
+        <h3>Favorite Artists</h3>
+        <div class="artists-grid" *ngIf="user.favArtists?.length; else noArtists">
+          <div class="artist-card" *ngFor="let artist of user.favArtists">
+            <img [src]="artist.image" [alt]="artist.name">
+            <p>{{ artist.name }}</p>
+          </div>
+        </div>
+        <ng-template #noArtists>
+          <p class="no-content">No favorite artists yet.</p>
+        </ng-template>
+      </div>
+
+      <div class="section">
+        <h3>Playlists</h3>
+        <div class="playlists-grid" *ngIf="user.likedPlaylists?.length; else noPlaylists">
+          <div class="playlist-card" *ngFor="let playlist of user.likedPlaylists">
+            <img [src]="playlist.image" [alt]="playlist.name">
+            <p>{{ playlist.name }}</p>
+          </div>
+        </div>
+        <ng-template #noPlaylists>
+          <p class="no-content">No playlists yet.</p>
+        </ng-template>
+      </div>
     </div>
   </div>
 </div>

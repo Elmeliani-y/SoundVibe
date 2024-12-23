@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <html>
     <body>
         <!-- Other component content -->
@@ -5,3 +6,49 @@
         <!-- Music Player Footer -->
     </body>
 </html>
+=======
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Tajawal:wght@200;300;400;500;700;800;900&display=swap" rel="stylesheet">
+<h2 mat-dialog-title class="dialog-title">Create My Playlist</h2>
+<mat-dialog-content class="mat-typography dialog-content">
+  <div class="image-container">
+    <img
+      [src]="imagePreview || 'assets/default-image.jpg'"
+      alt="Playlist Image"
+      class="playlist-image"
+    />
+    <button style="background-color:#ccc;"
+      mat-icon-button
+      class="upload-button"
+      (click)="triggerFileInput()"
+    >
+      <mat-icon style="background-color:#ccc;">camera_alt</mat-icon>
+    </button>
+    <input
+      type="file"
+      #fileInput
+      (change)="onImageSelected($event)"
+      accept="image/*"
+      hidden
+    />
+  </div>
+ <div class="form">
+  <div>
+    <mat-label class="label">Name</mat-label>
+    <input matInput placeholder="Playlist Name" [(ngModel)]="playlistName"  class="name"/>
+  </div>
+
+<div class="description">
+  
+    <mat-label class="labeldes">description</mat-label>
+    <textarea  class="desc" placeholder="Description of the playlist" rows="4" [(ngModel)]="description"></textarea>
+  
+</div>
+ </div>
+  
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="dialog-actions">
+  <button mat-button mat-dialog-close class="dialog-button">Cancel</button>
+  <button mat-button (click)="onCreatePlaylist()" class="dialog-button">Create</button>
+</mat-dialog-actions>
+>>>>>>> e0b4a316b1d482360a5e51732e77a6b10324e03f

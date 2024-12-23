@@ -2,9 +2,100 @@
 
 <div class="navbar">
     <div class="searchbar">
-        <input type="text" class="search" placeholder="Artistes, titres, podcasts...">
-        <button type="button" class="button">
-            <i class='bx bx-search-alt-2'></i>
+        <div class="search-container">
+            <input 
+                type="text" 
+                class="search" 
+                placeholder="Artistes, titres, podcasts..."
+                [(ngModel)]="searchQuery"
+                (input)="onSearchInput($event)"
+                (focus)="onFocusSearch()"
+                (blur)="onBlurSearch()">
+            <button type="button" class="button" [class.loading]="isLoading">
+                <i class='bx bx-search-alt-2' *ngIf="!isLoading"></i>
+                <i class='bx bx-loader-alt bx-spin' *ngIf="isLoading"></i>
+            </button>
+            <button *ngIf="searchQuery" type="button" class="clear-button" (click)="clearSearch()">
+                <i class='bx bx-x'></i>
+            </button>
+        </div>
+
+        <!-- Search Results Dropdown -->
+        <div class="search-results" *ngIf="(showResults && searchResults.length > 0) || error">
+            <div class="error-message" *ngIf="error">
+                {{ error }}
+            </div>
+            <div class="no-results" *ngIf="!error && searchResults.length === 0 && searchQuery">
+                No results found for "{{ searchQuery }}"
+            </div>
+            
+            <!-- Group results by type -->
+            <ng-container *ngIf="searchResults.length > 0">
+                <!-- Tracks Section -->
+                <div class="result-section" *ngIf="getResultsByType('track').length > 0">
+                    <div class="section-header">
+                        <i class='bx bx-music'></i>
+                        <span>Tracks</span>
+                    </div>
+                    <div class="result-item" 
+                         *ngFor="let result of getResultsByType('track')"
+                         (click)="selectResult(result)">
+                        <img [src]="result.imageUrl" 
+                             *ngIf="result.imageUrl" 
+                             alt="track" 
+                             class="result-image"
+                             onerror="this.src='assets/images/default-track.png'">
+                        <div class="result-info">
+                            <span class="result-name">{{result.name}}</span>
+                            <span class="result-subtitle">Track</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Artists Section -->
+                <div class="result-section" *ngIf="getResultsByType('artist').length > 0">
+                    <div class="section-header">
+                        <i class='bx bx-user'></i>
+                        <span>Artists</span>
+                    </div>
+                    <div class="result-item" 
+                         *ngFor="let result of getResultsByType('artist')"
+                         (click)="selectResult(result)">
+                        <img [src]="result.imageUrl" 
+                             *ngIf="result.imageUrl" 
+                             alt="artist" 
+                             class="result-image"
+                             onerror="this.src='assets/images/default-artist.png'">
+                        <div class="result-info">
+                            <span class="result-name">{{result.name}}</span>
+                            <span class="result-subtitle">Artist</span>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+    
+    <div class="profile-section">
+        <button class="profile-button" (click)="toggleProfileDropdown()" (blur)="closeProfileDropdown()">
+            <ng-container *ngIf="userProfilePic; else defaultIcon">
+                <img [src]="userProfilePic" alt="Profile" class="profile-pic">
+            </ng-container>
+            <ng-template #defaultIcon>
+                <i class='bx bx-user-circle'></i>
+            </ng-template>
+            <i class='bx bx-chevron-down'></i>
         </button>
+        
+        <div class="profile-dropdown" *ngIf="showProfileDropdown">
+            <div class="dropdown-item" (click)="navigateToProfile()">
+                <i class='bx bx-user'></i>
+                <span>Profile</span>
+            </div>
+            <div class="dropdown-item" (click)="logout()">
+                <i class='bx bx-log-out'></i>
+                <span>Log out</span>
+            </div>
+        </div>
     </div>
 </div>

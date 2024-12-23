@@ -13,37 +13,56 @@
 }
 
 /* Logo styles */
-.sidebar .side-hearder .logo img {
-    width: 100%; 
-    
-}
+.sidebar .side-header .logo img {
+    width: 150px; 
+    height: 150px;
 
+}
 
 .features {
     margin-top: 80px;
-    }
+    margin-right: 10px;
+}
+
+ul li {
+    list-style-type: none;
+}
+
 ul li a {
-    color: white;
+    color: #fff;
     font-size: 18px;
     text-decoration: none;
-    display: block;
+    display: flex; /* Use flexbox for icon + text alignment */
+    align-items: center;
     padding: 10px;
     font-family: "Roboto", sans-serif;
     font-weight: 500;
     position: relative;
-    padding-right: 10px;
-    padding-left: 10px; 
     margin-top: 15px; 
+    transition: all 0.3s ease; /* Smooth transition */
+    border-radius: 5px; /* Rounded edges */
 }
 
 /* Sidebar icon styling */
 ul li a i {
-    color: #824575;
+    color: #fff;
     font-size: 27px;
     padding-right: 15px;
+    transition: color 0.3s ease; /* Smooth transition for color */
 }
 
+/* Hover and focus effects (applied to <a>, affecting icon and text together) */
+ul li a:hover, ul li a:focus {
+    background-color: #522e5e; /* Darker purple background */
+    color: #C66BDE; /* Light purple text */
+    border-radius: 9px;
+}
 
+ul li a:hover i, ul li a:focus i {
+    color: #C66BDE; /* Light purple icon */
+}
+
+/* Playlist styles */
 .playlist a {
     text-decoration: none;
     font-family: "Roboto", sans-serif;
@@ -52,14 +71,25 @@ ul li a i {
     color: white;
     display: inline-block;
     margin-right: 10px;
-}
+    transition: all 0.3s ease;
+    border-radius: 5px;
 
+}
 
 .playlist .plus {
     font-size: 30px;
     color: #824575;
     font-weight: 400;
     display: inline-block;
+    margin-left: 60px;
+    background-color: #1A181F;
+    border: none;
+    box-shadow: none;
+}
+.playlist .plus:hover{
+    background-color: #cbadd3;
+    border-radius: 50px;
+
 }
 
 
@@ -70,22 +100,14 @@ ul li a i {
     margin: 20px 0;
 }
 
-
-ul li {
-    list-style-type: none;
-}
-
-
 .image {
     width: 150px;
     position: absolute;
     top: 0;
 }
 
-.side-hearder {
+.side-header {
     margin-bottom: 30px; 
 }
-.plus{
-    margin-left: 120px;
-   
-}
+
+

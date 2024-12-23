@@ -1,27 +1,61 @@
-const dotenv = require('dotenv');
-dotenv.config();
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
+const dotenv = require('dotenv');
 
-const MONGODB_URL = process.env.MONGODB_URL;
-console.log('MONGODB_URL:', MONGODB_URL); 
-if (!MONGODB_URL) {
-    throw new Error("MONGODB_URL is not defined in .env file");
-}
+dotenv.config();
 
-mongoose.connect(MONGODB_URL,)
-    .then(() => console.log("Connected to MongoDB"))
-    .catch(err => console.error("Failed to connect to MongoDB:", err));
+const MONGODB_URL = process.env.MONGODB_URL || 'mongodb://127.0.0.1:27017/SoundVibe';
+
+mongoose.connect(MONGODB_URL)
+  .then(() => {
+    console.log('Successfully connected to MongoDB');
+  })
+  .catch((error) => {
+    console.error('Error connecting to MongoDB:', error);
+  });
 
 const UserSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  lastname: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  musicStyle: { type: String, default: '' },
+  profilePicture: { type: String, default: null },
+  favArtists: [{
+    artistId: { type: String, required: true },
     name: { type: String, required: true },
-    username: { type: String, required: true, unique: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    profilePic: { type: Buffer },
-    musicStyle: { type: String },
-    favArtists: [{ type: String }],
-    likedplaylists: [{ type: String }]
+    image: { type: String, required: true },
+    addedAt: { type: Date, default: Date.now }
+  }],
+  likedPlaylists: [{
+    type: String,
+    ref: 'Playlist'
+  }]
+}, { 
+  timestamps: true,
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
+});
+
+// Hash password before saving
+UserSchema.pre('save', async function(next) {
+  if (this.isModified('password')) {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+  }
+  next();
+});
+
+// Method to compare password
+UserSchema.methods.comparePassword = async function(candidatePassword) {
+  return bcrypt.compare(candidatePassword, this.password);
+};
+
+// Virtual for user's full name
+UserSchema.virtual('fullName').get(function() {
+  return `${this.name} ${this.lastname}`;
 });
 
 const User = mongoose.model('User', UserSchema);
+
 module.exports = User;
