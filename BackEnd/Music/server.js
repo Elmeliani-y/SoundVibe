@@ -13,7 +13,7 @@ const app = express();
 app.use(cors());
 const PORT = 3001;
 const JAMENDO_API_URL = 'https://api.jamendo.com/v3.0';
-const JAMENDO_CLIENT_ID = 'a72fb851';
+const JAMENDO_CLIENT_ID = 'f9409435';
 
 app.use(express.json());
 

@@ -8,9 +8,9 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
-import { SidebarComponentComponent } from '../sidebar-component/sidebar-component.component';
 import { HttpClientModule } from '@angular/common/http';
-import { ProfileUpdateService } from '../services/profile-update.service'; // Import ProfileUpdateService
+import { ProfileUpdateService } from '../services/profile-update.service'; 
+import {SidebarComponentComponent} from '../sidebar-component/sidebar-component.component'
 
 
 @Component({
