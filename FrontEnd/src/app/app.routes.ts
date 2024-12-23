@@ -40,5 +40,6 @@ export const routes: Routes = [
     path: 'profile',
     redirectTo: 'profile/user1',
     pathMatch: 'full'
-  }
+  },
+ 
 ];

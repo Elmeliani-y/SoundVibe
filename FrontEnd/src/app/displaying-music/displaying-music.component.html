@@ -1,0 +1,102 @@
+<div class="music-display">
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="isLoading">
+    <div class="loading-spinner"></div>
+    <p>Loading your music...</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-container" *ngIf="error">
+    <p>{{ error }}</p>
+  </div>
+
+  <!-- Content -->
+  <div class="content-container" *ngIf="!isLoading && !error">
+    <!-- Favorite Tracks Section -->
+    <section class="section tracks-section" *ngIf="favoriteTracks.length > 0">
+      <h2 class="section-title">Artist's Tracks</h2>
+      <div class="tracks-grid">
+        <div class="track-card" *ngFor="let track of favoriteTracks">
+          <div class="track-image-container">
+            <img [src]="track.image" [alt]="track.name" class="track-image">
+            <div class="play-overlay" (click)="playTrack(track)">
+              <i class='bx bx-play-circle'></i>
+            </div>
+          </div>
+          <div class="track-info">
+            <h3 class="track-name">{{ track.name }}</h3>
+            <p class="track-artist">{{ track.artist_name }}</p>
+            <p class="track-genre" *ngIf="track.genre">{{ track.genre }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section artists-section" *ngIf="newArtists.length > 0">
+      <h2 class="section-title">Discover New Artists</h2>
+      <div class="artists-grid">
+        <div class="artist-card" *ngFor="let artist of newArtists">
+          <div class="artist-image-container">
+            <img [src]="artist.image || 'assets/default-artist.png'" [alt]="artist.name" class="artist-image">
+          </div>
+          <div class="artist-info">
+            <h3 class="artist-name">{{ artist.name }}</h3>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+
+   <!-- Albums Section Title -->
+<h1 class="main-title">Albums</h1>
+
+<!-- Albums Section -->
+<section class="section albums-section" *ngIf="favoriteArtistAlbums?.length && favoriteArtistAlbums[0]?.albums?.length">
+  <h2 class="section-title">Your Favorite Artists' Albums</h2>
+  <div class="albums-grid">
+    <ng-container *ngIf="favoriteArtistAlbums[0]?.albums">
+      <div class="album-card" *ngFor="let album of favoriteArtistAlbums[0].albums">
+        <div class="album-image-container">
+          <img [src]="album?.image || 'assets/default-album.png'" [alt]="album?.name || ''" class="album-image">
+        </div>
+        <div class="album-info">
+          <h3 class="album-name">{{ album?.name || 'Untitled Album' }}</h3>
+          <p class="album-artist">{{ album?.artist_name || 'Unknown Artist' }}</p>
+          <p class="album-date" *ngIf="album?.releaseDate">{{ album.releaseDate | date }}</p>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</section>
+
+<!-- No Albums Message -->
+<div class="no-content" *ngIf="!favoriteArtistAlbums?.length || !favoriteArtistAlbums[0]?.albums?.length">
+  <p>No albums available from your favorite artists</p>
+</div>
+
+    <!-- Popular Tracks Section -->
+    <section class="section tracks-section" *ngIf="popularTracks.length > 0">
+      <h2 class="section-title">Popular Music</h2>
+      <div class="tracks-grid">
+        <div class="track-card" *ngFor="let track of popularTracks">
+          <div class="track-image-container">
+            <img [src]="track.image" [alt]="track.name" class="track-image">
+            <div class="play-overlay" (click)="playTrack(track)">
+              <i class='bx bx-play-circle'></i>
+            </div>
+          </div>
+          <div class="track-info">
+            <h3 class="track-name">{{ track.name }}</h3>
+            <p class="track-artist">{{ track.artist_name }}</p>
+            <p class="track-genre" *ngIf="track.genre">{{ track.genre }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- No Content Message -->
+    <div class="no-content" *ngIf="!favoriteTracks.length && !newArtists.length && !favoriteArtistAlbums.length && !popularTracks.length">
+      <p>No music content available at the moment</p>
+    </div>
+  </div>
+</div>
