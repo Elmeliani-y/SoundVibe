@@ -1,0 +1,30 @@
+<div class="music-player">
+  <div class="track-info">
+    <img [src]="currentTrack?.albumImage" class="album-art" />
+    <div class="track-details">
+      <h3 class="track-name">{{ currentTrack?.name }}</h3>
+      <p class="track-artist">{{ currentTrack?.artist }}</p>
+    </div>
+  </div>
+  <div class="controls">
+    <button (click)="previousTrack()" style="background: transparent; border: none;">
+      <i class="material-icons">skip_previous</i>
+    </button>
+    <button (click)="isPlaying ? pause() : play()" style="background: transparent; border: none;">
+      <i class="material-icons">{{ isPlaying ? 'pause_circle_filled' : 'play_circle_filled' }}</i>
+    </button>
+    <button (click)="nextTrack()" style="background: transparent; border: none;">
+      <i class="material-icons">skip_next</i>
+    </button>
+    <button (click)="toggleRepeatMode()" style="background: transparent; border: none;">
+      <i class="material-icons">repeat</i>
+    </button>
+  </div>
+  <div class="progress-bar-container">
+    <input type="range" class="progress-bar" min="0" [max]="totalTime || 0" [value]="currentTime || 0" (input)="onProgressChange($event)" />
+    <span>{{ formatTime(currentTime) }} / {{ formatTime(totalTime) }}</span>
+  </div>
+  <div class="volume-control">
+    <input type="range" min="0" max="1" step="0.01" [(ngModel)]="volume" (ngModelChange)="setVolume(volume)" />
+  </div>
+</div>

@@ -1,0 +1,183 @@
+.music-player {
+  font-family: 'Raleway', sans-serif;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 400px;
+  height: fit-content;
+  padding: 15px;
+  background: rgba(44, 0, 62, 0.8);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  margin: 0 auto;
+  position: fixed;
+  bottom: 10px;
+  left: 63%;
+  transform: translateX(-50%);
+  color: #d1c4e9;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.track-info {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.album-art {
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  margin-right: 10px;
+}
+
+.track-name {
+  font-weight: bold;
+  font-size: 1em;
+  margin: 0;
+}
+
+.track-artist {
+  font-size: 0.85em;
+  margin: 0;
+  color: #b39ddb;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.progress-bar-container {
+  width: 100%;
+  margin: 10px 0;
+  text-align: center;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 5px;
+  outline: none;
+  margin: 5px 0;
+  -webkit-appearance: none;
+}
+
+.progress-bar::-webkit-slider-runnable-track {
+  height: 5px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 5px;
+}
+
+.progress-bar::-webkit-slider-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #d1c4e9;
+  cursor: pointer;
+}
+
+.progress-bar::-moz-range-track {
+  height: 5px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 5px;
+}
+
+.progress-bar::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #d1c4e9;
+  cursor: pointer;
+}
+
+.progress-bar::-ms-track {
+  height: 5px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 5px;
+  border: none;
+}
+
+.progress-bar::-ms-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #d1c4e9;
+  cursor: pointer;
+}
+
+/* Adding a purple color for active progress */
+.progress-bar.active {
+  background: linear-gradient(to right, purple 0%, purple calc(var(--progress) * 1%), rgba(255, 255, 255, 0.3) calc(var(--progress) * 1%), rgba(255, 255, 255, 0.3));
+}
+
+.volume-control {
+  width: 80%;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Volume control slider style */
+.volume-control input[type="range"] {
+  width: 100%;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 5px;
+  outline: none;
+  -webkit-appearance: none;
+  transition: background 0.2s;
+}
+
+.volume-control input[type="range"]::-webkit-slider-runnable-track {
+  height: 5px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 5px;
+}
+
+.volume-control input[type="range"]::-webkit-slider-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #d1c4e9;
+  cursor: pointer;
+}
+
+.volume-control input[type="range"]::-moz-range-track {
+  height: 5px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 5px;
+}
+
+.volume-control input[type="range"]::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #d1c4e9;
+  cursor: pointer;
+}
+
+.volume-control input[type="range"]::-ms-track {
+  height: 5px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 5px;
+  border: none;
+}
+
+.volume-control input[type="range"]::-ms-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #d1c4e9;
+  cursor: pointer;
+}
+
+.volume-control input[type="range"]:focus {
+  background: purple;
+}

@@ -86,7 +86,7 @@
     font-size: 24px; /* Adjust icon size */
     color: #000; /* Change icon color */
   }
-.name{
+/*.name{
     width: 500px;
     padding: 10px;
     border: none;
@@ -140,4 +140,40 @@
     font-weight: 500;
     font-family: "Roboto", sans-serif;
   }
-  
+  */.form {
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    gap: 20px; /* Add space between fields */
+    margin-top: 20px;
+}
+
+.label, .labeldes {
+    display: block; /* Ensure the label spans the full width */
+    margin-bottom: 5px; /* Space between label and input */
+    color: #fff;
+    font-weight: 500;
+    font-family: "Roboto", sans-serif;
+}
+
+.name, .desc {
+    width: 100%; /* Full width of the container */
+    max-width: 500px; /* Optional: limit the maximum width */
+    padding: 10px;
+    border: none;
+    background-color: #3B383D;
+    border-radius: 15px;
+    color: #fff;
+}
+
+.name:focus, .desc:focus {
+    border: 3px solid #9E4BBF;
+    outline: none;
+}
+
+.name:hover, .desc:hover {
+    background-color: #3c3c3f;
+}
+
+.description {
+    margin-top: 10px;
+}
