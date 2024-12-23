@@ -25,8 +25,7 @@
   </div>
 </div>
 
-<app-side-component></app-side-component>
-
+<app-sidebar-component></app-sidebar-component>
 <div class="container">
   <div *ngIf="tracks.length; else noTracks">
     <div class="row">
@@ -48,5 +47,8 @@
   <ng-template #noTracks>
     <p>No tracks available</p>
   </ng-template>
+  <footer>
+    <app-music-player></app-music-player>
+  </footer>
 </div>
 

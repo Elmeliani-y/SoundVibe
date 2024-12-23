@@ -2,14 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { MusicService } from '../services/music.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { SideComponentComponent } from "../side-component/side-component.component";
-import { HttpClientModule } from '@angular/common/http';
+import { SidebarComponentComponent } from "../sidebar-component/sidebar-component.component";
 import { MusicPlayerComponent } from '../music-player/music-player.component';
 
 @Component({
   selector: 'app-home-component',
   standalone: true,
-  imports: [SideComponentComponent, CommonModule, FormsModule,HttpClientModule,MusicPlayerComponent],
+  imports: [CommonModule, FormsModule, MusicPlayerComponent, SidebarComponentComponent],
   templateUrl: './home-component.component.html',
   styleUrls: ['./home-component.component.css'],
   providers: [MusicService]
