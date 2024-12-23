@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { NavbarComponent } from "../navbar/navbar.component";
 import { SidebarComponentComponent } from "../sidebar-component/sidebar-component.component";
+import { MusicPlayerComponent } from '../music-player/music-player.component';
 
 @Component({
   selector: 'app-explore',
   standalone: true,
-  imports: [NavbarComponent, SidebarComponentComponent],
+  imports: [NavbarComponent, SidebarComponentComponent,MusicPlayerComponent],
   templateUrl: './explore.component.html',
   styleUrl: './explore.component.css'
 })

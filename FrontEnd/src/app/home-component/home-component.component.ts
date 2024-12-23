@@ -4,11 +4,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SideComponentComponent } from "../side-component/side-component.component";
 import { HttpClientModule } from '@angular/common/http';
+import { MusicPlayerComponent } from '../music-player/music-player.component';
 
 @Component({
   selector: 'app-home-component',
   standalone: true,
-  imports: [SideComponentComponent, CommonModule, FormsModule,HttpClientModule],
+  imports: [SideComponentComponent, CommonModule, FormsModule,HttpClientModule,MusicPlayerComponent],
   templateUrl: './home-component.component.html',
   styleUrls: ['./home-component.component.css'],
   providers: [MusicService]
