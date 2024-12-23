@@ -10,7 +10,7 @@ const port = process.env.PORT4 || 3003;
 
 // Create FavArtist Schema
 const favArtistSchema = new mongoose.Schema({
-    userId: { type: String, required: true }, // We'll add user authentication later
+    userId: { type: String, required: true }, 
     artists: [{
         id: String,
         name: String,

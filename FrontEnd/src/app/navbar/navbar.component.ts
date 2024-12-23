@@ -4,6 +4,8 @@ import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil, finalize } from 'rxjs';
 import { SearchService, SearchResult } from '../services/search.service';
+import { ProfileUpdateService } from '../services/profile-update.service';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-navbar',
@@ -15,6 +17,7 @@ import { SearchService, SearchResult } from '../services/search.service';
 })
 export class NavbarComponent implements OnInit, OnDestroy {
   currentUserId: string = 'user1';
+  userProfilePic: string | null = null;
   searchQuery: string = '';
   searchResults: SearchResult[] = [];
   private searchSubject = new Subject<string>();
@@ -22,13 +25,32 @@ export class NavbarComponent implements OnInit, OnDestroy {
   showResults: boolean = false;
   isLoading: boolean = false;
   error: string | null = null;
+  showProfileDropdown: boolean = false;
 
   constructor(
     private searchService: SearchService,
-    private router: Router
+    private router: Router,
+    private profileUpdateService: ProfileUpdateService,
+    private userService: UserService
   ) {}
 
   ngOnInit() {
+    // Subscribe to profile picture updates
+    this.profileUpdateService.profilePicture$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(url => {
+        this.userProfilePic = url;
+      });
+
+    // Get initial profile picture
+    this.userService.getCurrentUser().subscribe({
+      next: (user) => {
+        if (user.profilePicture) {
+          this.userProfilePic = this.getProfilePictureUrl(user.profilePicture);
+        }
+      }
+    });
+
     this.searchSubject.pipe(
       debounceTime(300),
       distinctUntilChanged(),
@@ -41,6 +63,20 @@ export class NavbarComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  getProfilePictureUrl(url: string | null): string {
+    if (!url) return '';
+    
+    if (url.startsWith('http')) {
+      return url;
+    }
+    
+    if (url.startsWith('/uploads')) {
+      return `http://localhost:3000${url}`;
+    }
+    
+    return `http://localhost:3000/${url}`;
   }
 
   onSearchInput(event: any) {
@@ -116,5 +152,27 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   getResultsByType(type: 'track' | 'artist'): SearchResult[] {
     return this.searchResults.filter(result => result.type === type);
+  }
+
+  toggleProfileDropdown() {
+    this.showProfileDropdown = !this.showProfileDropdown;
+  }
+
+  navigateToProfile() {
+    this.router.navigate(['/profile', this.currentUserId]);
+    this.showProfileDropdown = false;
+  }
+
+  logout() {
+    // TODO: Add your logout logic here
+    localStorage.removeItem('token'); // Remove the auth token
+    this.router.navigate(['/login']);
+    this.showProfileDropdown = false;
+  }
+
+  closeProfileDropdown() {
+    setTimeout(() => {
+      this.showProfileDropdown = false;
+    }, 150); // Small delay to allow click events to register
   }
 }

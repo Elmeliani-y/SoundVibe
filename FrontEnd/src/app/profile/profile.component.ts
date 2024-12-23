@@ -10,6 +10,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
 import { SidebarComponentComponent } from '../sidebar-component/sidebar-component.component';
 import { HttpClientModule } from '@angular/common/http';
+import { ProfileUpdateService } from '../services/profile-update.service'; // Import ProfileUpdateService
 
 
 @Component({
@@ -42,6 +43,7 @@ export class ProfileComponent implements OnInit {
     private formBuilder: FormBuilder,
     private snackBar: MatSnackBar,
     private router: Router,
+    private profileUpdateService: ProfileUpdateService, // Add ProfileUpdateService to constructor
     public dialog: MatDialog
   ) {
     this.updateForm = this.formBuilder.group({
@@ -230,6 +232,10 @@ export class ProfileComponent implements OnInit {
         next: (updatedUser: User) => {
           console.log('Profile picture updated successfully:', updatedUser);
           this.user = updatedUser;
+          // Update the navbar profile picture
+          if (updatedUser.profilePicture) {
+            this.profileUpdateService.updateProfilePicture(this.getProfilePictureUrl(updatedUser.profilePicture));
+          }
           this.snackBar.open('Profile picture updated successfully', 'Close', {
             duration: 3000,
             panelClass: ['success-snackbar']
