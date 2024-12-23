@@ -9,7 +9,7 @@
     width: 250px;
   }
   
-  .main-content {
+  /*.main-content {
     flex-grow: 1;
     padding: 20px;
   }
@@ -84,6 +84,6 @@
     height: 1px;
     background-color: rgb(90, 89, 89);
     margin: 20px 0;
-  }
+  }*/
   
   
