@@ -1,11 +1,12 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';  // Ensure FormsModule is imported for ngModel
+import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+import { PlaylistService } from '../services/playlist.service';
 
 @Component({
   selector: 'app-add-playlist',
@@ -16,29 +17,32 @@ import { MatIconModule } from '@angular/material/icon';
     MatFormFieldModule, 
     MatInputModule, 
     MatButtonModule,
-    FormsModule , // Add FormsModule here
+    FormsModule,
     MatIconModule
   ],
   templateUrl: './add-playlist.component.html',
   styleUrls: ['./add-playlist.component.css']
 })
 export class AddPlaylistComponent {
-
   playlistName: string = '';
   description: string = '';
   selectedImage: File | null = null;
   imagePreview: string | null = null;
-  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>; // Référence au champ d'entrée de fichier
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+
+  constructor(
+    private playlistService: PlaylistService,
+    private dialogRef: MatDialogRef<AddPlaylistComponent>
+  ) {}
 
   triggerFileInput(): void {
     this.fileInput.nativeElement.click();
   }
+
   onImageSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
+    if (input.files && input.files[0]) {
       this.selectedImage = input.files[0];
-
-      // Create a URL for the selected image
       const reader = new FileReader();
       reader.onload = (e: any) => {
         this.imagePreview = e.target.result;
@@ -47,15 +51,26 @@ export class AddPlaylistComponent {
     }
   }
   
-  
   onCreatePlaylist(): void {
     if (this.playlistName && this.description) {
-      // Handle playlist creation logic here
-      console.log('Playlist Name:', this.playlistName);
-      console.log('Description:', this.description);
-      console.log('Selected Image:', this.selectedImage);
+      const formData = new FormData();
+      formData.append('name', this.playlistName);
+      formData.append('description', this.description);
+      if (this.selectedImage) {
+        formData.append('image', this.selectedImage);
+      }
+
+      this.playlistService.createPlaylist(formData).subscribe({
+        next: (response) => {
+          console.log('Playlist created successfully:', response);
+          this.dialogRef.close(true);
+        },
+        error: (error) => {
+          console.error('Error creating playlist:', error);
+        }
+      });
     } else {
-      console.error('Please fill in all fields!');
+      console.error('Please fill in all required fields!');
     }
   }
 }

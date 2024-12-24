@@ -92,6 +92,73 @@ ul li a:hover i, ul li a:focus i {
 
 }
 
+.playlist-section {
+    padding: 0 20px;
+}
+
+.playlist-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.playlist-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: calc(100vh - 300px);
+    overflow-y: auto;
+}
+
+.playlist-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.playlist-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.playlist-list::-webkit-scrollbar-thumb {
+    background: #cb6ce6;
+    border-radius: 2px;
+}
+
+.playlist-item {
+    padding: 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.playlist-item:hover {
+    background-color: rgba(203, 108, 230, 0.1);
+}
+
+.playlist-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: white;
+}
+
+.playlist-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+.playlist-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #fff;
+    transition: color 0.2s;
+}
+
+.playlist-item:hover .playlist-name {
+    color: #cb6ce6;
+}
 
 .line {
     width: 100%;
@@ -109,5 +176,3 @@ ul li a:hover i, ul li a:focus i {
 .side-header {
     margin-bottom: 30px; 
 }
-
-

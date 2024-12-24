@@ -21,4 +21,8 @@ export class PlaylistService {
   getPlaylists(limit: number = 8): Observable<Playlist[]> {
     return this.http.get<Playlist[]>(`${this.apiUrl}/playlists-Api`);
   }
+
+  createPlaylist(playlistData: FormData): Observable<Playlist> {
+    return this.http.post<Playlist>(`${this.apiUrl}/playlists-Api`, playlistData);
+  }
 }

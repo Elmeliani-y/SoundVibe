@@ -38,6 +38,7 @@ export class ProfileComponent implements OnInit {
   hasUnsavedChanges = false;
   initialFormValues: any;
 
+
   constructor(
     private userService: UserService,
     private formBuilder: FormBuilder,
@@ -188,75 +189,87 @@ export class ProfileComponent implements OnInit {
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
-    if (input.files && input.files[0]) {
-      const file = input.files[0];
-      console.log('File selected:', file.name);
-      
-      // Check file type
-      if (!file.type.startsWith('image/')) {
-        console.log('Invalid file type:', file.type);
-        this.snackBar.open('Please select an image file', 'Close', {
-          duration: 3000,
-          panelClass: ['error-snackbar']
-        });
-        return;
-      }
-      
-      // Check file size (5MB limit)
-      if (file.size > 5 * 1024 * 1024) {
-        console.log('File too large:', file.size);
-        this.snackBar.open('Image size should be less than 5MB', 'Close', {
-          duration: 3000,
-          panelClass: ['error-snackbar']
-        });
-        return;
-      }
-
-      // Show preview immediately
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const img = document.querySelector('.profile-pic img') as HTMLImageElement;
-        if (img && e.target?.result) {
-          console.log('Updating preview image');
-          img.src = e.target.result as string;
-        }
-      };
-      reader.readAsDataURL(file);
-
-      // Upload the file immediately
-      console.log('Uploading profile picture...');
-      const formData = new FormData();
-      formData.append('profilePicture', file);
-
-      this.userService.updateUser(formData).subscribe({
-        next: (updatedUser: User) => {
-          console.log('Profile picture updated successfully:', updatedUser);
-          this.user = updatedUser;
-          // Update the navbar profile picture
-          if (updatedUser.profilePicture) {
-            this.profileUpdateService.updateProfilePicture(this.getProfilePictureUrl(updatedUser.profilePicture));
-          }
-          this.snackBar.open('Profile picture updated successfully', 'Close', {
-            duration: 3000,
-            panelClass: ['success-snackbar']
-          });
-        },
-        error: (error) => {
-          console.error('Error updating profile picture:', error);
-          this.snackBar.open('Error updating profile picture', 'Close', {
-            duration: 3000,
-            panelClass: ['error-snackbar']
-          });
-          // Revert to old image if update fails
-          if (this.user?.profilePicture) {
-            const img = document.querySelector('.profile-pic img') as HTMLImageElement;
-            if (img) {
-              img.src = this.getProfilePictureUrl(this.user.profilePicture);
-            }
-          }
-        }
-      });
+    if (!input.files || input.files.length === 0) {
+      console.log('No file selected');
+      return;
     }
+
+    const file = input.files[0];
+    console.log('Selected file:', file);
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      console.log('Invalid file type:', file.type);
+      this.snackBar.open('Please select an image file', 'Close', {
+        duration: 3000,
+        panelClass: ['error-snackbar']
+      });
+      return;
+    }
+    
+    // Check file size (5MB limit)
+    if (file.size > 5 * 1024 * 1024) {
+      console.log('File too large:', file.size);
+      this.snackBar.open('Image size should be less than 5MB', 'Close', {
+        duration: 3000,
+        panelClass: ['error-snackbar']
+      });
+      return;
+    }
+
+    // Show preview immediately
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = document.querySelector('.profile-pic img') as HTMLImageElement;
+      if (img && e.target?.result) {
+        console.log('Updating preview image');
+        img.src = e.target.result as string;
+      }
+    };
+    reader.readAsDataURL(file);
+
+    // Upload the file immediately
+    console.log('Uploading profile picture...');
+    const formData = new FormData();
+    formData.append('profilePicture', file);
+
+    // Add other form fields if they exist
+    if (this.user) {
+      formData.append('name', this.user.name);
+      formData.append('email', this.user.email);
+      if (this.user.musicStyle) {
+        formData.append('musicStyle', this.user.musicStyle);
+      }
+    }
+
+    this.userService.updateUser(formData).subscribe({
+      next: (updatedUser: User) => {
+        console.log('Profile picture updated successfully:', updatedUser);
+        this.user = updatedUser;
+        // Update the navbar profile picture
+        if (updatedUser.profilePicture) {
+          this.profileUpdateService.updateProfilePicture(this.getProfilePictureUrl(updatedUser.profilePicture));
+        }
+        this.snackBar.open('Profile picture updated successfully', 'Close', {
+          duration: 3000,
+          panelClass: ['success-snackbar']
+        });
+      },
+      error: (error) => {
+        console.error('Error updating profile picture:', error);
+        this.snackBar.open('Error updating profile picture', 'Close', {
+          duration: 3000,
+          panelClass: ['error-snackbar']
+        });
+        // Revert to old image if update fails
+        if (this.user?.profilePicture) {
+          const img = document.querySelector('.profile-pic img') as HTMLImageElement;
+          if (img) {
+            img.src = this.getProfilePictureUrl(this.user.profilePicture);
+          }
+        }
+      }
+    });
   }
 
   onSubmit() {

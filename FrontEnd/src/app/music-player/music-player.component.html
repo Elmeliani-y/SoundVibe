@@ -25,28 +25,39 @@
     
     <div class="progress-bar-container">
       <span class="time">{{ formatTime(currentTime) }}</span>
-      <input 
-        type="range" 
-        class="progress-bar" 
-        min="0" 
-        [max]="totalTime || 0" 
-        [value]="currentTime || 0" 
-        (input)="onProgressChange($event)"
-      />
+      <div class="progress-slider-container">
+        <div class="progress-track">
+          <div class="progress-fill" [style.width.%]="(currentTime / totalTime) * 100"></div>
+        </div>
+        <input 
+          type="range" 
+          class="progress-input" 
+          min="0" 
+          [max]="totalTime || 0" 
+          [value]="currentTime || 0" 
+          (input)="onProgressChange($event)"
+        />
+      </div>
       <span class="time">{{ formatTime(totalTime) }}</span>
     </div>
   </div>
 
   <div class="volume-control">
     <i class="material-icons">volume_up</i>
-    <input
-      type="range"
-      min="0"
-      max="1"
-      step="0.1"
-      [value]="volume"
-      (input)="onVolumeChange($event)"
-    />
+    <div class="volume-slider-container">
+      <div class="volume-track">
+        <div class="volume-fill" [style.width.%]="volume * 100"></div>
+      </div>
+      <input
+        type="range"
+        class="volume-input"
+        min="0"
+        max="1"
+        step="0.1"
+        [value]="volume"
+        (input)="onVolumeChange($event)"
+      />
+    </div>
   </div>
 
   <!-- Heart/Favorite Button -->
@@ -56,7 +67,7 @@
   
   <!-- Create New Playlist Button -->
   <button (click)="openCreatePlaylistDialog()" style="background: transparent; border: none;">
-    <i class="material-icons">playlist_add</i>
+    <i class="material-icons" style="color:rgb(153, 77, 153);font-size: 30px;">playlist_add</i>
   </button>
 
   <!-- Playlist Menu -->

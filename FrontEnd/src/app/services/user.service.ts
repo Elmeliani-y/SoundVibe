@@ -41,12 +41,17 @@ export class UserService {
     return token;
   }
 
-  private getHttpOptions() {
+  private getHttpOptions(isFormData: boolean = false) {
+    const headers: any = {
+      'Authorization': `Bearer ${this.getToken()}`
+    };
+    
+    if (!isFormData) {
+      headers['Content-Type'] = 'application/json';
+    }
+
     return {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.getToken()}`
-      }),
+      headers: new HttpHeaders(headers),
       withCredentials: true
     };
   }
@@ -98,37 +103,17 @@ export class UserService {
   updateUser(formData: FormData): Observable<User> {
     console.log('Updating user profile...');
     try {
-      const options = this.getHttpOptions();
-      
-      // Log form data contents
-      console.log('Form data contents:');
-      formData.forEach((value, key) => {
-        if (key === 'profilePicture') {
-          const file = value as File;
-          console.log('Profile picture file:', {
-            name: file.name,
-            type: file.type,
-            size: file.size
-          });
-        } else {
-          console.log(`${key}:`, value);
-        }
-      });
-
+      // Use isFormData=true to skip Content-Type header for FormData
+      const options = this.getHttpOptions(true);
       return this.http.put<User>(`${this.apiUrl}/update`, formData, options).pipe(
         tap(updatedUser => {
-          console.log('Update response:', updatedUser);
+          console.log('User profile updated:', updatedUser);
           if (updatedUser.profilePicture) {
             console.log('New profile picture URL:', updatedUser.profilePicture);
-          } else {
-            console.log('No profile picture in updated user');
           }
         }),
         catchError(error => {
-          console.error('Error updating user:', error);
-          if (error.status === 401 || error.status === 403) {
-            localStorage.removeItem('token');
-          }
+          console.error('Error updating user profile:', error);
           return throwError(() => error);
         })
       );
@@ -138,4 +123,3 @@ export class UserService {
     }
   }
 }
-

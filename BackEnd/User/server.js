@@ -66,6 +66,16 @@ const upload = multer({
 // Serve static files from uploads directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Helper function to convert image path to full URL
+const getFullImageUrl = (imagePath) => {
+  if (!imagePath) return null;
+  if (imagePath.startsWith('http')) return imagePath;
+  if (imagePath.startsWith('/uploads/')) {
+    return `${BASE_URL}${imagePath}`;
+  }
+  return `${BASE_URL}/uploads/${imagePath}`;
+};
+
 // Sign-up endpoint
 app.post('/sign-up', async (req, res) => {
   try {
@@ -100,32 +110,10 @@ app.post('/sign-up', async (req, res) => {
       name: user.name
     });
 
-    // Generate token
-    const token = jwt.sign(
-      { id: user._id, email: user.email },
-      process.env.SECRET_KEY,
-      { expiresIn: '24h' }
-    );
-
-    // Send response
-    res.status(201).json({ 
-      message: 'User created successfully',
-      token,
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        lastname: user.lastname,
-        musicStyle: user.musicStyle,
-        profilePicture: user.profilePicture
-      }
-    });
+    res.status(201).json({ message: 'User created successfully' });
   } catch (error) {
-    console.error('Signup error:', error);
-    if (error.code === 11000) {
-      return res.status(400).json({ message: 'Email already exists' });
-    }
-    res.status(500).json({ message: error.message || 'Internal server error' });
+    console.error('Error in sign-up:', error);
+    res.status(500).json({ message: 'Error creating user' });
   }
 });
 
@@ -187,32 +175,6 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// Get user profile
-app.get('/profile', verifyJWT, async (req, res) => {
-  try {
-    console.log('Getting user profile for ID:', req.user.id);
-    const user = await userModel.findById(req.user.id).select('-password');
-    
-    if (!user) {
-      console.log('User not found');
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    // Convert relative paths to full URLs for profile picture
-    if (user.profilePicture && !user.profilePicture.startsWith('http')) {
-      if (user.profilePicture.startsWith('/uploads/')) {
-        user.profilePicture = `${BASE_URL}${user.profilePicture}`;
-      }
-    }
-
-    console.log('Sending user profile:', user);
-    res.json(user);
-  } catch (error) {
-    console.error('Error getting user profile:', error);
-    res.status(500).json({ message: 'Error getting user profile' });
-  }
-});
-
 // Update user profile
 app.put('/update', verifyJWT, upload.single('profilePicture'), async (req, res) => {
   try {
@@ -244,17 +206,7 @@ app.put('/update', verifyJWT, upload.single('profilePicture'), async (req, res) 
       // Delete old profile picture if it exists and is not the default
       if (user.profilePicture && !user.profilePicture.includes('default-profile.png')) {
         try {
-          let oldPicturePath;
-          if (user.profilePicture.startsWith('http')) {
-            const filename = user.profilePicture.split('/').pop();
-            oldPicturePath = path.join(__dirname, 'uploads', filename);
-          } else if (user.profilePicture.startsWith('/uploads/')) {
-            oldPicturePath = path.join(__dirname, user.profilePicture.slice(1));
-          } else {
-            oldPicturePath = path.join(__dirname, 'uploads', user.profilePicture);
-          }
-          
-          console.log('Attempting to delete old profile picture:', oldPicturePath);
+          const oldPicturePath = path.join(__dirname, 'uploads', path.basename(user.profilePicture));
           if (fs.existsSync(oldPicturePath)) {
             fs.unlinkSync(oldPicturePath);
             console.log('Successfully deleted old profile picture');
@@ -263,13 +215,12 @@ app.put('/update', verifyJWT, upload.single('profilePicture'), async (req, res) 
           console.error('Error deleting old profile picture:', error);
         }
       }
-      
-      // Set the new profile picture path
+
+      // Update with new profile picture
       updates.profilePicture = `/uploads/${req.file.filename}`;
-      console.log('New profile picture path:', updates.profilePicture);
     }
 
-    // Remove password fields from updates
+    // Remove password-related fields from updates
     delete updates.currentPassword;
     delete updates.newPassword;
     delete updates.confirmNewPassword;
@@ -283,19 +234,40 @@ app.put('/update', verifyJWT, upload.single('profilePicture'), async (req, res) 
       { new: true, select: '-password' }
     );
 
-    // Convert relative paths to full URLs for profile picture
-    if (updatedUser.profilePicture && !updatedUser.profilePicture.startsWith('http')) {
-      if (updatedUser.profilePicture.startsWith('/uploads/')) {
-        updatedUser.profilePicture = `${BASE_URL}${updatedUser.profilePicture}`;
-        console.log('Full profile picture URL:', updatedUser.profilePicture);
-      }
+    // Convert profile picture to full URL
+    if (updatedUser.profilePicture) {
+      updatedUser.profilePicture = getFullImageUrl(updatedUser.profilePicture);
     }
 
     console.log('User updated successfully:', updatedUser);
     res.json(updatedUser);
   } catch (error) {
-    console.error('Error updating profile:', error);
-    res.status(500).json({ message: 'Error updating profile' });
+    console.error('Error updating user:', error);
+    res.status(500).json({ message: 'Error updating user profile' });
+  }
+});
+
+// Get user profile
+app.get('/profile', verifyJWT, async (req, res) => {
+  try {
+    console.log('Getting user profile for ID:', req.user.id);
+    const user = await userModel.findById(req.user.id).select('-password');
+    
+    if (!user) {
+      console.log('User not found');
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Convert profile picture to full URL
+    if (user.profilePicture) {
+      user.profilePicture = getFullImageUrl(user.profilePicture);
+    }
+
+    console.log('Sending user profile:', user);
+    res.json(user);
+  } catch (error) {
+    console.error('Error getting user profile:', error);
+    res.status(500).json({ message: 'Error getting user profile' });
   }
 });
 
@@ -563,8 +535,7 @@ app.get('/users/favorites/tracks', verifyJWT, async (req, res) => {
   }
 });
 
-// Start the server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Server is running on ${PORT}`);
+    console.log(`User microservice is running on port ${PORT}`);
 });

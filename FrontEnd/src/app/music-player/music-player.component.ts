@@ -24,7 +24,7 @@ interface Playlist {
   templateUrl: './music-player.component.html',
   styleUrls: ['./music-player.component.css'],
   standalone: true,
-  imports: [FormsModule, CommonModule, MatIconModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule,CreatePlaylistDialogComponent]
+  imports: [FormsModule, CommonModule, MatIconModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule]
 })
 export class MusicPlayerComponent implements OnInit, OnDestroy {
   private readonly USER_API_URL = 'http://localhost:3001';
@@ -239,7 +239,8 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
 
   openCreatePlaylistDialog() {
     const dialogRef = this.dialog.open(CreatePlaylistDialogComponent, {
-      width: '300px'
+      width: '400px',
+      height: '400px',
     });
 
     dialogRef.afterClosed().subscribe(result => {

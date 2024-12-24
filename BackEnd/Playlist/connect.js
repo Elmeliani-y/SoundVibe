@@ -11,6 +11,7 @@ mongoose.connect(MONGODB_URL)
 const PlaylistSchema = new mongoose.Schema({
     name: { type: String, required: true },
     description: { type: String },
+    image: { type: String },
     tracks: [{ type: String }],
     owner: { type: String, required: true },
     collaborators: [{ type: String }]
