@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { catchError, finalize } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { MusicService } from '../services/music.service'; // Assuming MusicService is in the services directory
 
 interface Track {
   id: string;
@@ -82,7 +83,10 @@ export class DisplayingMusicComponent implements OnInit {
   private musicApiUrl = 'http://localhost:3001';
   private artistApiUrl = 'http://localhost:3003';
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private musicService: MusicService
+  ) {}
 
   ngOnInit() {
     this.loadContent();
@@ -206,7 +210,17 @@ export class DisplayingMusicComponent implements OnInit {
   }
 
   playTrack(track: Track) {
-    // Implement play functionality
-    console.log('Playing track:', track);
+    this.musicService.playTrack({
+      id: track.id,
+      name: track.name,
+      artist_name: track.artist_name,
+      genre: track.genre,
+      image: track.image,
+      audio_url: `https://mp3d.jamendo.com/download/track/${track.id}/mp32` // Jamendo MP3 URL format
+    });
+    this.musicService.setPlaylist(this.favoriteTracks.map(t => ({
+      ...t,
+      audio_url: `https://mp3d.jamendo.com/download/track/${t.id}/mp32`
+    })));
   }
 }

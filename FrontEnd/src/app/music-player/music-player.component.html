@@ -1,30 +1,49 @@
 <div class="music-player">
   <div class="track-info">
-    <img [src]="currentTrack?.albumImage" class="album-art" />
+    <img [src]="currentTrack?.image || 'assets/default-image.jpg'" class="album-art" alt="Album Art" />
     <div class="track-details">
-      <h3 class="track-name">{{ currentTrack?.name }}</h3>
-      <p class="track-artist">{{ currentTrack?.artist }}</p>
+      <h3 class="track-name">{{ currentTrack?.name || 'No track playing' }}</h3>
+      <p class="track-artist">{{ currentTrack?.artist_name || 'Unknown artist' }}</p>
     </div>
   </div>
   <div class="controls">
-    <button (click)="previousTrack()" style="background: transparent; border: none;">
-      <i class="material-icons">skip_previous</i>
-    </button>
-    <button (click)="isPlaying ? pause() : play()" style="background: transparent; border: none;">
-      <i class="material-icons">{{ isPlaying ? 'pause_circle_filled' : 'play_circle_filled' }}</i>
-    </button>
-    <button (click)="nextTrack()" style="background: transparent; border: none;">
-      <i class="material-icons">skip_next</i>
-    </button>
-    <button (click)="toggleRepeatMode()" style="background: transparent; border: none;">
-      <i class="material-icons">repeat</i>
-    </button>
+    <div class="control-buttons">
+      <button (click)="previousTrack()" style="background: transparent; border: none;">
+        <i class="material-icons">skip_previous</i>
+      </button>
+      <button (click)="isPlaying ? pause() : play()" style="background: transparent; border: none;">
+        <i class="material-icons">{{ isPlaying ? 'pause_circle_filled' : 'play_circle_filled' }}</i>
+      </button>
+      <button (click)="nextTrack()" style="background: transparent; border: none;">
+        <i class="material-icons">skip_next</i>
+      </button>
+      <button (click)="toggleRepeatMode()" style="background: transparent; border: none;" [class.active]="isRepeatMode">
+        <i class="material-icons" [style.color]="isRepeatMode ? '#cb6ce6' : ''">repeat</i>
+      </button>
+    </div>
+    <div class="progress-bar-container">
+      <span class="time">{{ formatTime(currentTime) }}</span>
+      <input 
+        type="range" 
+        class="progress-bar" 
+        min="0" 
+        [max]="totalTime || 0" 
+        [value]="currentTime || 0" 
+        (input)="onProgressChange($event)"
+      />
+      <span class="time">{{ formatTime(totalTime) }}</span>
+    </div>
   </div>
-  <div class="progress-bar-container">
-    <input type="range" class="progress-bar" min="0" [max]="totalTime || 0" [value]="currentTime || 0" (input)="onProgressChange($event)" />
-    <span>{{ formatTime(currentTime) }} / {{ formatTime(totalTime) }}</span>
-  </div>
+
   <div class="volume-control">
-    <input type="range" min="0" max="1" step="0.01" [(ngModel)]="volume" (ngModelChange)="setVolume(volume)" />
+    <i class="material-icons">volume_up</i>
+    <input 
+      type="range" 
+      min="0" 
+      max="1" 
+      step="0.01" 
+      [(ngModel)]="volume" 
+      (ngModelChange)="setVolume($event)"
+    />
   </div>
 </div>
