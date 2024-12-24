@@ -307,6 +307,30 @@ app.get('/music/favorites', verifyJWT, async (req, res) => {
   }
 });
 
+// Get user's favorite artists
+app.get('/music/favorite-artists', verifyJWT, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const user = await userModel.findById(userId);
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Map the favArtists array to include necessary information
+    const favoriteArtists = user.favArtists.map(artist => ({
+      id: artist._id || artist.id,
+      name: artist.name,
+      image: artist.image
+    }));
+
+    res.json(favoriteArtists);
+  } catch (error) {
+    console.error('Error fetching favorite artists:', error);
+    res.status(500).json({ message: 'Error fetching favorite artists' });
+  }
+});
+
 app.listen(PORT, () => {
     console.log(`Music Service is running on port ${PORT}`);
 });

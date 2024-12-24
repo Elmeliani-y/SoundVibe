@@ -7,6 +7,12 @@ import { MusicService, Track } from '../services/music.service';
 import { SidebarComponentComponent } from '../sidebar-component/sidebar-component.component';
 import { NavbarComponent } from '../navbar/navbar.component';
 
+interface Artist {
+  id: string;
+  name: string;
+  image?: string;
+}
+
 @Component({
   selector: 'app-favorites',
   standalone: true,
@@ -23,7 +29,10 @@ import { NavbarComponent } from '../navbar/navbar.component';
 })
 export class FavoritesComponent implements OnInit {
   @ViewChild('trackList') trackList!: ElementRef;
+  @ViewChild('artistList') artistList!: ElementRef;
+  
   favoriteTracks: Track[] = [];
+  favoriteArtists: Artist[] = [];
   isLoading = false;
   error: string | null = null;
 
@@ -31,6 +40,7 @@ export class FavoritesComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadFavoriteTracks();
+    this.loadFavoriteArtists();
   }
 
   loadFavoriteTracks(): void {
@@ -45,6 +55,24 @@ export class FavoritesComponent implements OnInit {
       error: (error) => {
         console.error('Error loading favorite tracks:', error);
         this.error = 'Failed to load favorite tracks. Please try again later.';
+        this.isLoading = false;
+      }
+    });
+  }
+
+  loadFavoriteArtists(): void {
+    this.isLoading = true;
+    this.error = null;
+    
+    // Get favorite artists from user data
+    this.musicService.getFavoriteArtists().subscribe({
+      next: (artists) => {
+        this.favoriteArtists = artists;
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Error loading favorite artists:', error);
+        this.error = 'Failed to load favorite artists. Please try again later.';
         this.isLoading = false;
       }
     });
@@ -72,5 +100,9 @@ export class FavoritesComponent implements OnInit {
     if (progressThumb) {
       progressThumb.style.width = `${scrollPercentage}%`;
     }
+  }
+
+  onArtistScroll(event: Event): void {
+    // You can add similar scroll behavior for artists section if needed
   }
 }

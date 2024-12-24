@@ -291,6 +291,15 @@ export class MusicService {
     );
   }
 
+  getFavoriteArtists(): Observable<any> {
+    return this.http.get(`${this.API_URL}/favorite-artists`, this.getHttpOptions()).pipe(
+      catchError(error => {
+        console.error('Error fetching favorite artists:', error);
+        throw error;
+      })
+    );
+  }
+
   private getToken(): string {
     const token = localStorage.getItem('token');
     if (!token) {

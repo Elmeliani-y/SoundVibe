@@ -1,46 +1,82 @@
 <div class="favorites-container">
-  <div class="header">
-    <h2>Your Favorite Tracks</h2>
-  </div>
+  <div class="section">
+    <div class="header">
+      <h2>Your Favorite Artists</h2>
+    </div>
 
-  <div *ngIf="isLoading" class="loading">
-    <mat-spinner diameter="40"></mat-spinner>
-  </div>
+    <div *ngIf="isLoading" class="loading">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
 
-  <div *ngIf="error" class="error-message">
-    {{ error }}
-  </div>
+    <div *ngIf="error" class="error-message">
+      {{ error }}
+    </div>
 
-  <div class="progress-bar-container">
-    <div class="progress-bar">
-      <div class="progress-thumb"></div>
+    <div *ngIf="!isLoading && !error" class="artists-section">
+      <div class="artists-row" #artistList (scroll)="onArtistScroll($event)">
+        <div *ngFor="let artist of favoriteArtists" class="artist-card">
+          <div class="artist-image-container">
+            <img [src]="artist.image || 'assets/images/default-artist.png'" [alt]="artist.name" class="artist-image">
+          </div>
+          <div class="artist-info">
+            <h3>{{ artist.name }}</h3>
+            <p>Artist</p>
+          </div>
+        </div>
+
+        <div *ngIf="favoriteArtists.length === 0" class="no-content">
+          <mat-icon>person_outline</mat-icon>
+          <p>No favorite artists yet</p>
+          <p class="subtitle">Explore and follow your favorite artists!</p>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div *ngIf="!isLoading && !error" class="tracks-section">
-    <div class="tracks-row" #trackList (scroll)="onScroll($event)">
-      <div *ngFor="let track of favoriteTracks" class="track-card">
-        <div class="track-image-container">
-          <img [src]="track.image || 'assets/images/default-album-art.png'" [alt]="track.name" class="track-image">
-          <div class="track-overlay">
-            <button mat-icon-button (click)="playTrack(track)" class="play-button">
-              <mat-icon>play_arrow</mat-icon>
-            </button>
-          </div>
-        </div>
-        <div class="track-info">
-          <h3>{{ track.name }}</h3>
-          <p>{{ track.artist_name }}</p>
-        </div>
-        <button mat-icon-button (click)="removeFavorite(track.id)" class="remove-button">
-          <mat-icon>favorite</mat-icon>
-        </button>
-      </div>
+  <div class="section">
+    <div class="header">
+      <h2>Your Favorite Tracks</h2>
+    </div>
 
-      <div *ngIf="favoriteTracks.length === 0" class="no-tracks">
-        <mat-icon>favorite_border</mat-icon>
-        <p>No favorite tracks yet</p>
-        <p class="subtitle">Start exploring and like some tracks!</p>
+    <div *ngIf="isLoading" class="loading">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+
+    <div *ngIf="error" class="error-message">
+      {{ error }}
+    </div>
+
+    <div class="progress-bar-container">
+      <div class="progress-bar">
+        <div class="progress-thumb"></div>
+      </div>
+    </div>
+
+    <div *ngIf="!isLoading && !error" class="tracks-section">
+      <div class="tracks-row" #trackList (scroll)="onScroll($event)">
+        <div *ngFor="let track of favoriteTracks" class="track-card">
+          <div class="track-image-container">
+            <img [src]="track.image || 'assets/images/default-album-art.png'" [alt]="track.name" class="track-image">
+            <div class="track-overlay">
+              <button mat-icon-button (click)="playTrack(track)" class="play-button">
+                <mat-icon>play_arrow</mat-icon>
+              </button>
+            </div>
+          </div>
+          <div class="track-info">
+            <h3>{{ track.name }}</h3>
+            <p>{{ track.artist_name }}</p>
+          </div>
+          <button mat-icon-button (click)="removeFavorite(track.id)" class="remove-button">
+            <mat-icon>favorite</mat-icon>
+          </button>
+        </div>
+
+        <div *ngIf="favoriteTracks.length === 0" class="no-content">
+          <mat-icon>favorite_border</mat-icon>
+          <p>No favorite tracks yet</p>
+          <p class="subtitle">Start exploring and like some tracks!</p>
+        </div>
       </div>
     </div>
   </div>
