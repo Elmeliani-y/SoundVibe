@@ -6,21 +6,23 @@
       <p class="track-artist">{{ currentTrack?.artist_name || 'Unknown artist' }}</p>
     </div>
   </div>
+  
   <div class="controls">
     <div class="control-buttons">
-      <button (click)="previousTrack()" style="background: transparent; border: none;">
+      <button (click)="playPrevious()">
         <i class="material-icons">skip_previous</i>
       </button>
-      <button (click)="isPlaying ? pause() : play()" style="background: transparent; border: none;">
+      <button (click)="togglePlay()">
         <i class="material-icons">{{ isPlaying ? 'pause_circle_filled' : 'play_circle_filled' }}</i>
       </button>
-      <button (click)="nextTrack()" style="background: transparent; border: none;">
+      <button (click)="playNext()">
         <i class="material-icons">skip_next</i>
       </button>
-      <button (click)="toggleRepeatMode()" style="background: transparent; border: none;" [class.active]="isRepeatMode">
-        <i class="material-icons" [style.color]="isRepeatMode ? '#cb6ce6' : ''">repeat</i>
+      <button (click)="toggleRepeat()" [class.active]="isRepeatMode">
+        <i class="material-icons">repeat</i>
       </button>
     </div>
+    
     <div class="progress-bar-container">
       <span class="time">{{ formatTime(currentTime) }}</span>
       <input 
@@ -37,21 +39,38 @@
 
   <div class="volume-control">
     <i class="material-icons">volume_up</i>
-    <input 
-      type="range" 
-      min="0" 
-      max="1" 
-      step="0.01" 
-      [(ngModel)]="volume" 
-      (ngModelChange)="setVolume($event)"
+    <input
+      type="range"
+      min="0"
+      max="1"
+      step="0.1"
+      [value]="volume"
+      (input)="onVolumeChange($event)"
     />
   </div>
-   <!-- Heart/Favorite Button -->
-   <button style="background: transparent; border: none;">
-    <i class="material-icons" [style.color]="isInPlaylist ? '#cb6ce6' : ''">favorite</i>
+
+  <!-- Heart/Favorite Button -->
+  <button (click)="toggleFavorite()" style="background: transparent; border: none;">
+    <i class="material-icons" [style.color]="isInFavorites ? '#cb6ce6' : '#b3b3b3'">favorite</i>
   </button>
+  
   <!-- Create New Playlist Button -->
   <button (click)="openCreatePlaylistDialog()" style="background: transparent; border: none;">
-    <i class="material-icons">add_circle_outline</i>
+    <i class="material-icons">playlist_add</i>
   </button>
+
+  <!-- Playlist Menu -->
+  <div class="playlist-menu" *ngIf="showPlaylistMenu" [style.top]="playlistMenuTop" [style.left]="playlistMenuLeft">
+    <div *ngIf="playlists.length > 0; else noPlaylists">
+      <div class="playlist-menu-item" *ngFor="let playlist of playlists" (click)="addToPlaylist(playlist.id)">
+        {{ playlist.name }}
+      </div>
+    </div>
+    <ng-template #noPlaylists>
+      <div class="no-playlists">No playlists available</div>
+    </ng-template>
+    <div class="playlist-menu-item create-new" (click)="openCreatePlaylistDialog()">
+      Create New Playlist
+    </div>
+  </div>
 </div>

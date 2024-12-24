@@ -11,6 +11,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import {CreatePlaylistDialogComponent} from './CreatePlaylistDialogComponent';
+
 interface Playlist {
   id: string;
   name: string;
@@ -26,6 +27,7 @@ interface Playlist {
   imports: [FormsModule, CommonModule, MatIconModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule,CreatePlaylistDialogComponent]
 })
 export class MusicPlayerComponent implements OnInit, OnDestroy {
+  private readonly USER_API_URL = 'http://localhost:3001';
   currentTrack: Track | null = null;
   isPlaying: boolean = false;
   volume: number = 1;
@@ -40,6 +42,7 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
   playlistMenuTop: string = '0px';
   playlistMenuLeft: string = '0px';
   isInPlaylist: boolean = false;
+  isInFavorites: boolean = false;
 
   constructor(
     private musicService: MusicService,
@@ -62,6 +65,7 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
         this.currentTrack = track;
         if (track) {
           this.checkIfInPlaylist(track.id);
+          this.checkIfInFavorites(track.id);
         }
       })
     );
@@ -77,35 +81,33 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
-  play() {
+  togglePlay() {
     if (this.currentTrack) {
-      this.musicService.resume();
+      if (this.isPlaying) {
+        this.musicService.pause();
+      } else {
+        this.musicService.resume();
+      }
     }
   }
 
-  pause() {
-    this.musicService.pause();
+  playNext() {
+    this.musicService.playNext();
   }
 
-  nextTrack() {
-    // Implement next track logic
+  playPrevious() {
+    this.musicService.playPrevious();
   }
 
-  previousTrack() {
-    // Implement previous track logic
-  }
-
-  onProgressChange(event: Event) {
-    const input = event.target as HTMLInputElement;
-    this.musicService.seekTo(Number(input.value));
-  }
-
-  setVolume(volume: number) {
+  setVolume(value: string | number) {
+    const volume = typeof value === 'string' ? parseFloat(value) : value;
+    this.volume = volume;
     this.musicService.setVolume(volume);
   }
 
-  toggleRepeatMode() {
+  toggleRepeat() {
     this.isRepeatMode = !this.isRepeatMode;
+    this.musicService.setRepeatMode(this.isRepeatMode);
   }
 
   formatTime(time: number): string {
@@ -115,7 +117,13 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
   }
 
   loadPlaylists() {
-    this.http.get<Playlist[]>('http://localhost:3002/playlists-user').subscribe(
+    this.http.get<Playlist[]>('http://localhost:3002/playlists-user', {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json'
+      },
+      withCredentials: true
+    }).subscribe(
       (playlists) => {
         this.playlists = playlists;
       },
@@ -125,19 +133,19 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
     );
   }
 
-  openAddToPlaylistMenu(event: MouseEvent) {
-    event.stopPropagation();
-    // Position the menu near the button
-    this.playlistMenuTop = `${event.clientY}px`;
-    this.playlistMenuLeft = `${event.clientX}px`;
-    this.showPlaylistMenu = true;
-  }
-
   addToPlaylist(playlistId: string) {
-    if (!this.currentTrack) return;
+    if (!this.currentTrack) {
+      return;
+    }
     
     this.http.post(`http://localhost:3002/playlists/${playlistId}/tracks`, {
       trackId: this.currentTrack.id
+    }, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json'
+      },
+      withCredentials: true
     }).subscribe(
       () => {
         this.showPlaylistMenu = false;
@@ -150,14 +158,83 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
   }
 
   checkIfInPlaylist(trackId: string) {
-    this.http.get<boolean>(`http://localhost:3002/playlists/check-track/${trackId}`).subscribe(
+    this.http.get<boolean>(`http://localhost:3002/playlists/check-track/${trackId}`, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json'
+      },
+      withCredentials: true
+    }).subscribe(
       (isInPlaylist) => {
         this.isInPlaylist = isInPlaylist;
       },
       (error) => {
-        console.error('Error checking track in playlist:', error);
+        console.error('Error checking playlist:', error);
       }
     );
+  }
+
+  checkIfInFavorites(trackId: string) {
+    this.http.get<{ isInFavorites: boolean }>(
+      `${this.USER_API_URL}/users/favorites/tracks/${trackId}`,
+      {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        },
+        withCredentials: true
+      }
+    ).subscribe(
+      (response) => {
+        this.isInFavorites = response.isInFavorites;
+      },
+      (error) => {
+        console.error('Error checking favorites:', error);
+        this.isInFavorites = false;
+      }
+    );
+  }
+
+  async toggleFavorite() {
+    if (!this.currentTrack) return;
+    
+    try {
+      if (this.isInFavorites) {
+        // Remove from favorites
+        await this.http.delete(
+          `${this.USER_API_URL}/users/favorites/tracks/${this.currentTrack.id}`,
+          {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}`,
+              'Content-Type': 'application/json'
+            },
+            withCredentials: true
+          }
+        ).toPromise();
+        this.isInFavorites = false;
+      } else {
+        // Add to favorites
+        await this.http.post(
+          `${this.USER_API_URL}/users/favorites/tracks`,
+          {
+            trackId: this.currentTrack.id,
+            name: this.currentTrack.name,
+            artist: this.currentTrack.artist_name,
+            image: this.currentTrack.image || 'default-image.jpg'
+          },
+          {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}`,
+              'Content-Type': 'application/json'
+            },
+            withCredentials: true
+          }
+        ).toPromise();
+        this.isInFavorites = true;
+      }
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+    }
   }
 
   openCreatePlaylistDialog() {
@@ -167,7 +244,13 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.http.post('http://localhost:3002/playlists/new-pl', result).subscribe(
+        this.http.post('http://localhost:3002/playlists/new-pl', result, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json'
+          },
+          withCredentials: true
+        }).subscribe(
           () => {
             this.loadPlaylists();
           },
@@ -178,5 +261,18 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
       }
     });
   }
-}
 
+  onVolumeChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input) {
+      this.setVolume(input.value);
+    }
+  }
+
+  onProgressChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input) {
+      this.musicService.seekTo(Number(input.value));
+    }
+  }
+}

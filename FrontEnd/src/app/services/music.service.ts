@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, BehaviorSubject, catchError } from 'rxjs';
 
 export interface Track {
   id: string;
@@ -36,10 +36,18 @@ export class MusicService {
   private playlist: Track[] = [];
   private currentTrackIndex = -1;
   private isLoading = false;
+  private repeatMode = new BehaviorSubject<boolean>(false);
 
   constructor(private http: HttpClient) {
     this.audio.addEventListener('ended', () => {
-      this.playNext();
+      if (this.repeatMode.value) {
+        // If repeat is on, restart the current track
+        this.audio.currentTime = 0;
+        this.audio.play();
+      } else {
+        // Otherwise, play next track
+        this.playNext();
+      }
     });
 
     this.audio.addEventListener('loadstart', () => {
@@ -59,20 +67,30 @@ export class MusicService {
     return this.isPlaying.asObservable();
   }
 
+  private getHttpOptions() {
+    return {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.getToken()}`
+      }),
+      withCredentials: true
+    };
+  }
+
   getAllTracks(): Observable<any> {
-    return this.http.get(`${this.API_URL}/all`);
+    return this.http.get(`${this.API_URL}/all`, this.getHttpOptions());
   }
 
   searchTracks(name: string): Observable<any> {
-    return this.http.get(`${this.API_URL}/search/${name}`);
+    return this.http.get(`${this.API_URL}/search/${name}`, this.getHttpOptions());
   }
 
   getTrackById(id: string): Observable<Track> {
-    return this.http.get<Track>(`${this.API_URL}/track/${id}`);
+    return this.http.get<Track>(`${this.API_URL}/track/${id}`, this.getHttpOptions());
   }
 
   getLyrics(trackId: string): Observable<string> {
-    return this.http.get<string>(`${this.API_URL}/lyrics/${trackId}`);
+    return this.http.get<string>(`${this.API_URL}/lyrics/${trackId}`, this.getHttpOptions());
   }
 
   async playTrack(track: Track) {
@@ -182,22 +200,58 @@ export class MusicService {
   }
 
   likeTrack(trackId: string): Observable<{ success: boolean }> {
-    return this.http.post<{ success: boolean }>(`${this.API_URL}/like/${trackId}`, {});
+    return this.http.post<{ success: boolean }>(`${this.API_URL}/like/${trackId}`, {}, this.getHttpOptions());
   }
 
   unlikeTrack(trackId: string): Observable<{ success: boolean }> {
-    return this.http.delete<{ success: boolean }>(`${this.API_URL}/like/${trackId}`);
+    return this.http.delete<{ success: boolean }>(`${this.API_URL}/like/${trackId}`, this.getHttpOptions());
   }
 
-  getUserPlaylists(): Observable<Playlist[]> {
-    return this.http.get<Playlist[]>(`${this.API_URL}/playlists`);
+  getUserPlaylists(): Observable<any> {
+    return this.http.get(`${this.API_URL}/playlists-user`, this.getHttpOptions()).pipe(
+      catchError(error => {
+        console.error('Error fetching playlists:', error);
+        throw error;
+      })
+    );
   }
 
-  addToPlaylist(playlistId: string, trackId: string): Observable<{ success: boolean }> {
-    return this.http.post<{ success: boolean }>(`${this.API_URL}/playlist/${playlistId}/add`, { trackId });
+  addToPlaylist(playlistId: string, trackId: string): Observable<any> {
+    return this.http.post(
+      `${this.API_URL}/playlists/${playlistId}/tracks`,
+      { trackId },
+      this.getHttpOptions()
+    ).pipe(
+      catchError(error => {
+        console.error('Error adding track to playlist:', error);
+        throw error;
+      })
+    );
   }
 
-  createPlaylist(name: string): Observable<Playlist> {
-    return this.http.post<Playlist>(`${this.API_URL}/playlist/create`, { name });
+  createPlaylist(name: string): Observable<any> {
+    return this.http.post(
+      `${this.API_URL}/playlists`,
+      { name },
+      this.getHttpOptions()
+    ).pipe(
+      catchError(error => {
+        console.error('Error creating playlist:', error);
+        throw error;
+      })
+    );
+  }
+
+  getRepeatMode(): Observable<boolean> {
+    return this.repeatMode.asObservable();
+  }
+
+  setRepeatMode(repeat: boolean) {
+    this.repeatMode.next(repeat);
+  }
+
+  private getToken(): string {
+    // implement token retrieval logic here
+    return '';
   }
 }

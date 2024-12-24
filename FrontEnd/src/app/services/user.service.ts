@@ -31,21 +31,31 @@ export class UserService {
 
   constructor(private http: HttpClient) { }
 
-  private getHeaders(): HttpHeaders {
+  private getToken(): string {
     const token = localStorage.getItem('token');
     if (!token) {
       console.error('No token found in localStorage');
       throw new Error('Authentication token missing');
     }
     console.log('Using token:', token);
-    return new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return token;
+  }
+
+  private getHttpOptions() {
+    return {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.getToken()}`
+      }),
+      withCredentials: true
+    };
   }
 
   getProfile(): Observable<User> {
     console.log('Getting user profile...');
     try {
-      const headers = this.getHeaders();
-      return this.http.get<User>(`${this.apiUrl}/profile`, { headers }).pipe(
+      const options = this.getHttpOptions();
+      return this.http.get<User>(`${this.apiUrl}/profile`, options).pipe(
         tap(user => console.log('Profile data received:', user)),
         catchError((error) => {
           console.error('Error fetching profile:', error);
@@ -61,8 +71,8 @@ export class UserService {
   getCurrentUser(): Observable<User> {
     console.log('Getting current user...');
     try {
-      const headers = this.getHeaders();
-      return this.http.get<User>(`${this.apiUrl}/profile`, { headers }).pipe(
+      const options = this.getHttpOptions();
+      return this.http.get<User>(`${this.apiUrl}/profile`, options).pipe(
         tap(user => {
           console.log('Retrieved user data:', user);
           if (user.profilePicture) {
@@ -88,7 +98,7 @@ export class UserService {
   updateUser(formData: FormData): Observable<User> {
     console.log('Updating user profile...');
     try {
-      const headers = this.getHeaders();
+      const options = this.getHttpOptions();
       
       // Log form data contents
       console.log('Form data contents:');
@@ -105,7 +115,7 @@ export class UserService {
         }
       });
 
-      return this.http.put<User>(`${this.apiUrl}/update`, formData, { headers }).pipe(
+      return this.http.put<User>(`${this.apiUrl}/update`, formData, options).pipe(
         tap(updatedUser => {
           console.log('Update response:', updatedUser);
           if (updatedUser.profilePicture) {

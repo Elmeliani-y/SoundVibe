@@ -13,10 +13,16 @@ const verifyJWT = require('./middlewear/index');
 dotenv.config();
 const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
 const app = express();
-app.use(express.json());
 
+// CORS configuration
 app.use(cors({
+  origin: 'http://localhost:4200',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
+app.use(express.json());
 
 app.use(
     session({
@@ -469,7 +475,96 @@ app.post(`/playlists/:playlistid/unlike`, verifyJWT, async (req, res) => {
     }
 });
 
+// Add track to favorites
+app.post('/users/favorites/tracks', verifyJWT, async (req, res) => {
+  try {
+    const { trackId, name, artist, image } = req.body;
+    const userId = req.user.id;
+
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Check if track already exists in favorites
+    const trackExists = user.favoriteTracks.some(track => track.trackId === trackId);
+    if (!trackExists) {
+      user.favoriteTracks.push({
+        trackId,
+        name,
+        artist,
+        image,
+        addedAt: new Date()
+      });
+      await user.save();
+    }
+
+    res.json({ success: true, favorites: user.favoriteTracks });
+  } catch (error) {
+    console.error('Error adding track to favorites:', error);
+    res.status(500).json({ message: 'Error adding track to favorites' });
+  }
+});
+
+// Remove track from favorites
+app.delete('/users/favorites/tracks/:trackId', verifyJWT, async (req, res) => {
+  try {
+    const { trackId } = req.params;
+    const userId = req.user.id;
+
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.favoriteTracks = user.favoriteTracks.filter(track => track.trackId !== trackId);
+    await user.save();
+
+    res.json({ success: true, favorites: user.favoriteTracks });
+  } catch (error) {
+    console.error('Error removing track from favorites:', error);
+    res.status(500).json({ message: 'Error removing track from favorites' });
+  }
+});
+
+// Check if track is in favorites
+app.get('/users/favorites/tracks/:trackId', verifyJWT, async (req, res) => {
+  try {
+    const { trackId } = req.params;
+    const userId = req.user.id;
+
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const isInFavorites = user.favoriteTracks.some(track => track.trackId === trackId);
+    res.json({ isInFavorites });
+  } catch (error) {
+    console.error('Error checking favorite track:', error);
+    res.status(500).json({ message: 'Error checking favorite track' });
+  }
+});
+
+// Get all favorite tracks
+app.get('/users/favorites/tracks', verifyJWT, async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json(user.favoriteTracks);
+  } catch (error) {
+    console.error('Error fetching favorite tracks:', error);
+    res.status(500).json({ message: 'Error fetching favorite tracks' });
+  }
+});
+
 // Start the server
-app.listen(process.env.PORT, () => {
-    console.log(`Server is running on ${process.env.PORT}`);
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server is running on ${PORT}`);
 });

@@ -21,6 +21,13 @@ const UserSchema = new mongoose.Schema({
   password: { type: String, required: true },
   musicStyle: { type: String, default: '' },
   profilePicture: { type: String, default: null },
+  favoriteTracks: [{
+    trackId: { type: String, required: true },
+    name: { type: String, required: true },
+    artist: { type: String, required: true },
+    image: { type: String, required: true },
+    addedAt: { type: Date, default: Date.now }
+  }],
   favArtists: [{
     artistId: { type: String, required: true },
     name: { type: String, required: true },
