@@ -300,7 +300,40 @@ app.get('/music/favorites', verifyJWT, async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    res.json({ tracks: user.favoriteTracks });
+    // Get full track details from Jamendo for each favorite track
+    const tracksWithDetails = await Promise.all(user.favoriteTracks.map(async (track) => {
+      try {
+        const response = await axios.get(`${JAMENDO_API_URL}/tracks`, {
+          params: {
+            client_id: JAMENDO_CLIENT_ID,
+            format: 'json',
+            id: track.trackId
+          }
+        });
+
+        if (response.data.results && response.data.results.length > 0) {
+          const jamendoTrack = response.data.results[0];
+          return {
+            id: jamendoTrack.id,
+            name: jamendoTrack.name,
+            artist_name: jamendoTrack.artist_name,
+            image: jamendoTrack.image,
+            audio_url: jamendoTrack.audio,
+            duration: jamendoTrack.duration,
+            addedAt: track.addedAt
+          };
+        }
+        return null;
+      } catch (error) {
+        console.error(`Error fetching details for track ${track.trackId}:`, error);
+        return null;
+      }
+    }));
+
+    // Filter out any null values from failed requests
+    const validTracks = tracksWithDetails.filter(track => track !== null);
+
+    res.json({ tracks: validTracks });
   } catch (error) {
     console.error('Error fetching favorite tracks:', error);
     res.status(500).json({ message: 'Error fetching favorite tracks' });

@@ -1,37 +1,6 @@
+
+
 <div class="favorites-container">
-  <div class="section">
-    <div class="header">
-      <h2>Your Favorite Artists</h2>
-    </div>
-
-    <div *ngIf="isLoading" class="loading">
-      <mat-spinner diameter="40"></mat-spinner>
-    </div>
-
-    <div *ngIf="error" class="error-message">
-      {{ error }}
-    </div>
-
-    <div *ngIf="!isLoading && !error" class="artists-section">
-      <div class="artists-row" #artistList (scroll)="onArtistScroll($event)">
-        <div *ngFor="let artist of favoriteArtists" class="artist-card">
-          <div class="artist-image-container">
-            <img [src]="artist.image || 'assets/images/default-artist.png'" [alt]="artist.name" class="artist-image">
-          </div>
-          <div class="artist-info">
-            <h3>{{ artist.name }}</h3>
-            <p>Artist</p>
-          </div>
-        </div>
-
-        <div *ngIf="favoriteArtists.length === 0" class="no-content">
-          <mat-icon>person_outline</mat-icon>
-          <p>No favorite artists yet</p>
-          <p class="subtitle">Explore and follow your favorite artists!</p>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <div class="section">
     <div class="header">
@@ -80,6 +49,43 @@
       </div>
     </div>
   </div>
+
+  <div class="section">
+    <div class="header">
+      <h2>Your Favorite Artists</h2>
+    </div>
+
+    <div *ngIf="isLoading" class="loading">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+
+    <div *ngIf="error" class="error-message">
+      {{ error }}
+    </div>
+
+    <div *ngIf="!isLoading && !error" class="artists-section">
+      <div class="artists-row" #artistList (scroll)="onArtistScroll($event)">
+        <div *ngFor="let artist of favoriteArtists" class="artist-card">
+          <div class="artist-image-container">
+            <img [src]="artist.image || 'assets/images/default-artist.png'" [alt]="artist.name" class="artist-image">
+          </div>
+          <div class="artist-info">
+            <h3>{{ artist.name }}</h3>
+            <p>Artist</p>
+          </div>
+        </div>
+
+        <div *ngIf="favoriteArtists.length === 0" class="no-content">
+          <mat-icon>person_outline</mat-icon>
+          <p>No favorite artists yet</p>
+          <p class="subtitle">Explore and follow your favorite artists!</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
+
+<app-music-player></app-music-player>
 <app-sidebar-component></app-sidebar-component>
 <app-navbar></app-navbar>

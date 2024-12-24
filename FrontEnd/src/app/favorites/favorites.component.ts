@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MusicService, Track } from '../services/music.service';
 import { SidebarComponentComponent } from '../sidebar-component/sidebar-component.component';
 import { NavbarComponent } from '../navbar/navbar.component';
+import { MusicPlayerComponent } from '../music-player/music-player.component';
 
 interface Artist {
   id: string;
@@ -22,7 +23,8 @@ interface Artist {
     MatIconModule,
     MatButtonModule,
     SidebarComponentComponent,
-    NavbarComponent
+    NavbarComponent,
+    MusicPlayerComponent
   ],
   templateUrl: './favorites.component.html',
   styleUrls: ['./favorites.component.css']
@@ -35,8 +37,14 @@ export class FavoritesComponent implements OnInit {
   favoriteArtists: Artist[] = [];
   isLoading = false;
   error: string | null = null;
+  showMusicPlayer = false;
 
-  constructor(private musicService: MusicService) {}
+  constructor(private musicService: MusicService) {
+    // Subscribe to current track to show/hide music player
+    this.musicService.getCurrentTrack().subscribe(track => {
+      this.showMusicPlayer = !!track;
+    });
+  }
 
   ngOnInit(): void {
     this.loadFavoriteTracks();
@@ -64,7 +72,6 @@ export class FavoritesComponent implements OnInit {
     this.isLoading = true;
     this.error = null;
     
-    // Get favorite artists from user data
     this.musicService.getFavoriteArtists().subscribe({
       next: (artists) => {
         this.favoriteArtists = artists;
@@ -80,6 +87,7 @@ export class FavoritesComponent implements OnInit {
 
   playTrack(track: Track): void {
     this.musicService.playTrack(track);
+    this.showMusicPlayer = true;
   }
 
   removeFavorite(trackId: string): void {
