@@ -5,6 +5,7 @@ import { SignUpComponent } from './auth/sign-up/sign-up.component';
 import { ExploreComponent } from './explore/explore.component';
 import { HomeAppComponent } from './home-app/home-app.component';
 import { ProfileComponent } from './profile/profile.component';
+import { AlbumDetailsComponent } from './album-details/album-details.component';
 
 export const routes: Routes = [
   { path: '', redirectTo:'sign-up', pathMatch: 'full' },
@@ -19,7 +20,7 @@ export const routes: Routes = [
     title:'choose Artists'
   },
   {
-    path: 'app-home',
+    path: 'home-app',
     component: HomeAppComponent, 
     title: 'home',
   },
@@ -27,7 +28,15 @@ export const routes: Routes = [
     path: 'login',
     component: LoginComponent
   },
-  { path: 'explore', component: ExploreComponent },
+  { 
+    path: 'explore', 
+    component: ExploreComponent 
+  },
+  {
+    path: 'album/:id',
+    component: AlbumDetailsComponent,
+    title: 'Album Details'
+  },
   {
     path: 'profile/:userId',
     component: ProfileComponent

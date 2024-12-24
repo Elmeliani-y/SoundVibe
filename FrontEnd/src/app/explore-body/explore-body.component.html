@@ -1,0 +1,55 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Bowlby+One+SC&family=Fugaz+One&family=Ibarra+Real+Nova:ital,wght@0,400..700;1,400..700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Tajawal:wght@200;300;400;500;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<div class="explore-content">
+    <h6>Explore</h6>
+    
+    <!-- Albums Section -->
+    <section class="albums-section">
+        
+        <div class="section-header">
+            <div class="header-controls">
+                <button class="voir-tout" (click)="navigateToAllAlbums()">Voir tout</button>
+                <div class="nav-buttons">
+                    <button class="nav-btn prev" (click)="scrollAlbums('left')">
+                        <i class="fas fa-chevron-left" style="color: #db92e4;"></i>
+                    </button>
+                    <button class="nav-btn next" (click)="scrollAlbums('right')">
+                        <i class="fas fa-chevron-right" style="color: #db92e4;"></i>
+                    </button>                
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div *ngIf="loading" class="loading-state">
+            <div class="spinner"></div>
+            <p>Loading albums...</p>
+        </div>
+
+        <!-- Error State -->
+        <div *ngIf="error" class="error-state">
+            <p>{{ error }}</p>
+            <button (click)="loadAlbums()" class="retry-button">Try Again</button>
+        </div>
+        <h2>Le meilleur de 2024</h2>
+        <div class="albums-container" *ngIf="!loading && !error">
+            <div class="albums-grid">
+                <div class="album-card" *ngFor="let album of albums" (click)="onAlbumClick(album.id)">
+                    <div class="album-image-container">
+                        <img [src]="album.image || 'https://via.placeholder.com/200'" [alt]="album.name" class="album-image">
+                        <div class="album-overlay">
+                            <button class="play-button">
+                                <i class="fas fa-play"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <h3 class="album-name">{{ album.name }}</h3>
+                    <p class="album-artist">{{ album.artist_name }}</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

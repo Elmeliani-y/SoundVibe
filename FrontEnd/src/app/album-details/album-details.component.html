@@ -1,0 +1,85 @@
+<div class="album-details-container">
+    <!-- Loading State -->
+    <div class="loading-container" *ngIf="loading">
+        <div class="loading-spinner"></div>
+        <p>Loading album details...</p>
+    </div>
+
+    <!-- Error State -->
+    <div class="error-container" *ngIf="error">
+        <div class="error-message">
+            <i class="fas fa-exclamation-circle"></i>
+            <p>{{ error }}</p>
+        </div>
+        <button class="retry-button" (click)="loadAlbumDetails(album?.id || '')">
+            <i class="fas fa-redo"></i> Try Again
+        </button>
+    </div>
+
+    <!-- Album Content -->
+    <div class="album-content" *ngIf="!loading && !error && album">
+        <div class="album-header">
+            <div class="album-cover">
+                <img [src]="album.image || 'assets/images/default-album.jpg'" [alt]="album.name">
+            </div>
+            <div class="album-info">
+                <div class="album-type">Album</div>
+                <h1 class="album-title">{{ album.name }}</h1>
+                <div class="album-meta">
+                    <div class="artist-name">{{ album.artist_name }}</div>
+                    <div class="album-year">{{ album.releasedate | date:'yyyy' }}</div>
+                    <div class="tracks-count" *ngIf="album.tracks">
+                        {{ album.tracks.length }} tracks
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="album-actions">
+            <button class="play-button" (click)="playAlbum()">
+                <i class="fas fa-play"></i>
+                <span>Play</span>
+            </button>
+            <button class="like-button" [class.liked]="isLiked" (click)="toggleLike()">
+                <i class="fas" [class.fa-heart]="isLiked" [class.fa-heart-o]="!isLiked"></i>
+            </button>
+        </div>
+
+        <!-- Tracks Section -->
+        <div class="tracks-section" *ngIf="album.tracks && album.tracks.length > 0">
+            <div class="tracks-header">
+                <div class="track-number">#</div>
+                <div class="track-info">Title</div>
+                <div class="track-duration">
+                    <i class="far fa-clock"></i>
+                </div>
+            </div>
+
+            <div class="tracks-list">
+                <div class="track-item" *ngFor="let track of album.tracks; let i = index" 
+                     (click)="playTrack(track)">
+                    <div class="track-number">{{ i + 1 }}</div>
+                    <div class="track-info">
+                        <div class="track-name">{{ track.name }}</div>
+                        <div class="track-artist">{{ track.artist_name }}</div>
+                    </div>
+                    <div class="track-duration">{{ formatDuration(track.duration) }}</div>
+                    <div class="track-actions">
+                        <button class="track-play-button" (click)="playTrack(track); $event.stopPropagation()">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <button class="track-add-button" (click)="addToPlaylist(track); $event.stopPropagation()">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- No Tracks Message -->
+        <div class="no-tracks-message" *ngIf="!album.tracks || album.tracks.length === 0">
+            <i class="fas fa-music"></i>
+            <p>No tracks available for this album</p>
+        </div>
+    </div>
+</div>

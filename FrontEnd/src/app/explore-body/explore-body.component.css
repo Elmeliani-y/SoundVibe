@@ -1,0 +1,359 @@
+/* explore.component.css */
+
+
+  .main-content {
+    flex-grow: 1;
+    padding: 20px;
+  }
+  h2{
+    margin-left: 260px;
+  }
+  
+
+  h6{
+    font-family: 'Bowlby One SC', sans-serif;
+    font-size: 40px;
+    font-weight: 400;
+    left: 170px;
+    margin-left: 250px;
+    margin-top: 90px;
+    
+    color: white;
+    
+  }
+
+  .explore-content {
+    padding: 20px;
+    margin-left: 10px;
+    margin-top: 100px;
+    background: #0F0C12;
+    margin-top: 20px;
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-right: 200px;
+    margin-top: 100px;
+  }
+
+  .section-header h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0;
+    color: #fff;
+  }
+
+  .header-controls {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-right: 100px;
+  }
+
+  .header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .genre-filter {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+    padding: 0 20px;
+  }
+
+  .genre-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 8px 20px;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    opacity: 0.7;
+  }
+
+  .genre-btn:hover {
+    opacity: 1;
+    background: rgba(173, 85, 173, 0.1);
+    border-color: #ad55ad;
+  }
+
+  .genre-btn.active {
+    background: #ad55ad;
+    border-color: #ad55ad;
+    opacity: 1;
+  }
+
+  .genre-selector {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+
+  .voir-tout {
+    background: transparent;
+    color: #fff;
+    border: none;
+    width: 100px;
+    padding: 10px;
+    cursor: pointer;
+    background-color: #ad55ad;
+    font-size: 19px;
+    border-radius: 15px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    opacity: 0.8;
+    position: relative;
+    margin-left: 900px;
+    
+
+  }
+
+  .voir-tout:hover {
+    opacity: 1;
+    color: #fff;
+    background-color: #ad55ad;
+    
+    border-radius: 15px;
+  }
+
+  .nav-buttons {
+    display: flex;
+    gap: 12px;
+    position: relative;
+    margin-left: 90px;
+  }
+
+  .nav-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .nav-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+  }
+
+  .nav-btn:active {
+    transform: scale(0.95);
+  }
+
+  .nav-btn i {
+    font-size: 14px;
+  }
+
+  .albums-container {
+    position: relative;
+    overflow: hidden;
+    padding: 0 20px;
+    margin-left: 90px;
+    /*z-index: -1;*/
+  }
+  .albums-section{
+    margin-bottom: 56px;
+  }
+
+  .albums-grid {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    padding: 4px 0;
+    scroll-behavior: smooth;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    scroll-snap-type: x mandatory;
+    margin-left: 150px;
+  }
+
+  .albums-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .album-card {
+    flex: 0 0 220px;
+    background:  #0F0C12;
+    
+    border-radius: 8px;
+    padding: 16px;
+    transition: background-color 0.3s;
+    scroll-snap-align: start;
+  }
+
+  .album-card:hover {
+    background: #282828;
+  }
+
+  .album-image-container {
+    position: relative;
+    width: 100%;
+    padding-top: 100%;
+    margin-bottom: 16px;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .album-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .album-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #0F0C12 ;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  
+
+  .play-button {
+    background: #c27cc2;
+    border: none;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+  }
+
+  .play-button:hover {
+    transform: scale(1.1);
+    background: #c9a7c9;
+  }
+
+  .play-button i {
+    color: white;
+    font-size: 20px;
+  }
+
+  .album-info {
+    padding: 8px 0;
+    color: white;
+  }
+
+  .album-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 4px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .album-artist {
+    font-size: 12px;
+    color: #b3b3b3;
+    margin: 0 0 4px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .album-stats {
+    font-size: 12px;
+    color: #b3b3b3;
+    margin: 0;
+  }
+
+  .loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    color: #b3b3b3;
+  }
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #2c2c2c;
+    border-top: 4px solid #1DB954;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .error-state {
+    text-align: center;
+    padding: 20px;
+    color: #dc3545;
+  }
+
+  .retry-button {
+    background: #1DB954;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.2s;
+  }
+
+  .retry-button:hover {
+    background: #1ed760;
+  }
+
+  h5 {
+    color: white;
+    font-size: 24px;
+    margin: 20px 0;
+    padding-left: 20px;
+  }
+
+  .rock-album {
+    background: #2d1f3d !important;
+  }
+
+  .rock-album:hover {
+    background: #3d2a52 !important;
+  }
+
+  .rock-album .album-stats {
+    color: #ad55ad;
+    font-weight: 600;
+  }
+
+  .rock-album .play-button {
+    background: #ad55ad;
+  }
+
+  .rock-album .play-button:hover {
+    background: #9640c7;
+  }
