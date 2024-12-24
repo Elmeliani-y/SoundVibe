@@ -11,8 +11,14 @@
     {{ error }}
   </div>
 
+  <div class="progress-bar-container">
+    <div class="progress-bar">
+      <div class="progress-thumb"></div>
+    </div>
+  </div>
+
   <div *ngIf="!isLoading && !error" class="tracks-section">
-    <div class="tracks-row">
+    <div class="tracks-row" #trackList (scroll)="onScroll($event)">
       <div *ngFor="let track of favoriteTracks" class="track-card">
         <div class="track-image-container">
           <img [src]="track.image || 'assets/images/default-album-art.png'" [alt]="track.name" class="track-image">
