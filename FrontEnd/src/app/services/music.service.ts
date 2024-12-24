@@ -200,11 +200,40 @@ export class MusicService {
   }
 
   likeTrack(trackId: string): Observable<{ success: boolean }> {
-    return this.http.post<{ success: boolean }>(`${this.API_URL}/like/${trackId}`, {}, this.getHttpOptions());
+    return this.http.post<{ success: boolean }>(
+      `${this.API_URL}/like/${trackId}`,
+      {},
+      this.getHttpOptions()
+    ).pipe(
+      catchError(error => {
+        console.error('Error liking track:', error);
+        throw error;
+      })
+    );
   }
 
   unlikeTrack(trackId: string): Observable<{ success: boolean }> {
-    return this.http.delete<{ success: boolean }>(`${this.API_URL}/like/${trackId}`, this.getHttpOptions());
+    return this.http.delete<{ success: boolean }>(
+      `${this.API_URL}/unlike/${trackId}`,
+      this.getHttpOptions()
+    ).pipe(
+      catchError(error => {
+        console.error('Error unliking track:', error);
+        throw error;
+      })
+    );
+  }
+
+  checkIfFavorite(trackId: string): Observable<{ isLiked: boolean }> {
+    return this.http.get<{ isLiked: boolean }>(
+      `${this.API_URL}/check-favorite/${trackId}`,
+      this.getHttpOptions()
+    ).pipe(
+      catchError(error => {
+        console.error('Error checking favorite status:', error);
+        throw error;
+      })
+    );
   }
 
   getUserPlaylists(): Observable<any> {
@@ -250,8 +279,24 @@ export class MusicService {
     this.repeatMode.next(repeat);
   }
 
+  getFavoriteTracks(): Observable<{ tracks: Track[] }> {
+    return this.http.get<{ tracks: Track[] }>(
+      `${this.API_URL}/favorites`,
+      this.getHttpOptions()
+    ).pipe(
+      catchError(error => {
+        console.error('Error fetching favorite tracks:', error);
+        throw error;
+      })
+    );
+  }
+
   private getToken(): string {
-    // implement token retrieval logic here
-    return '';
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.warn('No token found in localStorage');
+      return '';
+    }
+    return token;
   }
 }

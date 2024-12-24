@@ -129,6 +129,7 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
       },
       (error) => {
         console.error('Error loading playlists:', error);
+        this.playlists = [];
       }
     );
   }
@@ -158,35 +159,27 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
   }
 
   checkIfInPlaylist(trackId: string) {
-    this.http.get<boolean>(`http://localhost:3002/playlists/check-track/${trackId}`, {
+    this.http.get<{ isInPlaylist: boolean }>(`http://localhost:3002/playlists/check-track/${trackId}`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`,
         'Content-Type': 'application/json'
       },
       withCredentials: true
     }).subscribe(
-      (isInPlaylist) => {
-        this.isInPlaylist = isInPlaylist;
+      (response) => {
+        this.isInPlaylist = response.isInPlaylist;
       },
       (error) => {
         console.error('Error checking playlist:', error);
+        this.isInPlaylist = false;
       }
     );
   }
 
   checkIfInFavorites(trackId: string) {
-    this.http.get<{ isInFavorites: boolean }>(
-      `${this.USER_API_URL}/users/favorites/tracks/${trackId}`,
-      {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          'Content-Type': 'application/json'
-        },
-        withCredentials: true
-      }
-    ).subscribe(
+    this.musicService.checkIfFavorite(trackId).subscribe(
       (response) => {
-        this.isInFavorites = response.isInFavorites;
+        this.isInFavorites = response.isLiked;
       },
       (error) => {
         console.error('Error checking favorites:', error);
@@ -195,45 +188,31 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
     );
   }
 
-  async toggleFavorite() {
+  toggleFavorite() {
     if (!this.currentTrack) return;
-    
-    try {
-      if (this.isInFavorites) {
-        // Remove from favorites
-        await this.http.delete(
-          `${this.USER_API_URL}/users/favorites/tracks/${this.currentTrack.id}`,
-          {
-            headers: {
-              'Authorization': `Bearer ${localStorage.getItem('token')}`,
-              'Content-Type': 'application/json'
-            },
-            withCredentials: true
+
+    if (this.isInFavorites) {
+      this.musicService.unlikeTrack(this.currentTrack.id).subscribe(
+        (response) => {
+          if (response.success) {
+            this.isInFavorites = false;
           }
-        ).toPromise();
-        this.isInFavorites = false;
-      } else {
-        // Add to favorites
-        await this.http.post(
-          `${this.USER_API_URL}/users/favorites/tracks`,
-          {
-            trackId: this.currentTrack.id,
-            name: this.currentTrack.name,
-            artist: this.currentTrack.artist_name,
-            image: this.currentTrack.image || 'default-image.jpg'
-          },
-          {
-            headers: {
-              'Authorization': `Bearer ${localStorage.getItem('token')}`,
-              'Content-Type': 'application/json'
-            },
-            withCredentials: true
+        },
+        (error) => {
+          console.error('Error removing track from favorites:', error);
+        }
+      );
+    } else {
+      this.musicService.likeTrack(this.currentTrack.id).subscribe(
+        (response) => {
+          if (response.success) {
+            this.isInFavorites = true;
           }
-        ).toPromise();
-        this.isInFavorites = true;
-      }
-    } catch (error) {
-      console.error('Error toggling favorite:', error);
+        },
+        (error) => {
+          console.error('Error adding track to favorites:', error);
+        }
+      );
     }
   }
 

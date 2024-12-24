@@ -14,6 +14,6 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     provideAnimations(),
     provideHttpClient(withFetch()),
-    SearchService
+    
   ]
 };
