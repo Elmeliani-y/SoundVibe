@@ -98,24 +98,7 @@
     margin-top: 8px;
   }
 
-  .voir-tout {
-    background: transparent;
-    color: #fff;
-    border: none;
-    width: 100px;
-    padding: 10px;
-    cursor: pointer;
-    background-color: #ad55ad;
-    font-size: 19px;
-    border-radius: 15px;
-    font-size: 14px;
-    transition: all 0.2s ease;
-    opacity: 0.8;
-    position: relative;
-    margin-left: 900px;
-    
-
-  }
+  
 
   .voir-tout:hover {
     opacity: 1;
