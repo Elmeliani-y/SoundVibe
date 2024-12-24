@@ -10,7 +10,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-
+import {CreatePlaylistDialogComponent} from './CreatePlaylistDialogComponent';
 interface Playlist {
   id: string;
   name: string;
@@ -23,7 +23,7 @@ interface Playlist {
   templateUrl: './music-player.component.html',
   styleUrls: ['./music-player.component.css'],
   standalone: true,
-  imports: [FormsModule, CommonModule, MatIconModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule]
+  imports: [FormsModule, CommonModule, MatIconModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule,CreatePlaylistDialogComponent]
 })
 export class MusicPlayerComponent implements OnInit, OnDestroy {
   currentTrack: Track | null = null;
@@ -180,39 +180,3 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
   }
 }
 
-@Component({
-  selector: 'app-create-playlist-dialog',
-  template: `
-    <h2 mat-dialog-title>Create New Playlist</h2>
-    <mat-dialog-content>
-      <mat-form-field>
-        <input matInput [(ngModel)]="name" placeholder="Playlist Name">
-      </mat-form-field>
-      <mat-form-field>
-        <textarea matInput [(ngModel)]="description" placeholder="Description"></textarea>
-      </mat-form-field>
-    </mat-dialog-content>
-    <mat-dialog-actions>
-      <button mat-button (click)="onCancel()">Cancel</button>
-      <button mat-button color="primary" (click)="onCreate()">Create</button>
-    </mat-dialog-actions>
-  `,
-  standalone: true,
-  imports: [MatDialogModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule]
-})
-export class CreatePlaylistDialogComponent {
-  name: string = '';
-  description: string = '';
-
-  constructor(private dialogRef: MatDialogRef<CreatePlaylistDialogComponent>) {}
-
-  onCancel(): void {
-    this.dialogRef.close();
-  }
-
-  onCreate(): void {
-    if (this.name.trim()) {
-      this.dialogRef.close({ name: this.name, description: this.description });
-    }
-  }
-}

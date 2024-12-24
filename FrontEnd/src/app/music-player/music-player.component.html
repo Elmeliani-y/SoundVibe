@@ -46,4 +46,12 @@
       (ngModelChange)="setVolume($event)"
     />
   </div>
+   <!-- Heart/Favorite Button -->
+   <button style="background: transparent; border: none;">
+    <i class="material-icons" [style.color]="isInPlaylist ? '#cb6ce6' : ''">favorite</i>
+  </button>
+  <!-- Create New Playlist Button -->
+  <button (click)="openCreatePlaylistDialog()" style="background: transparent; border: none;">
+    <i class="material-icons">add_circle_outline</i>
+  </button>
 </div>
