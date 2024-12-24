@@ -11,29 +11,31 @@
     {{ error }}
   </div>
 
-  <div *ngIf="!isLoading && !error" class="tracks-grid">
-    <div *ngFor="let track of favoriteTracks" class="track-card">
-      <div class="track-image-container">
-        <img [src]="track.image || 'assets/images/default-album-art.png'" [alt]="track.name" class="track-image">
-        <div class="track-overlay">
-          <button mat-icon-button (click)="playTrack(track)" class="play-button">
-            <mat-icon>play_arrow</mat-icon>
-          </button>
+  <div *ngIf="!isLoading && !error" class="tracks-section">
+    <div class="tracks-row">
+      <div *ngFor="let track of favoriteTracks" class="track-card">
+        <div class="track-image-container">
+          <img [src]="track.image || 'assets/images/default-album-art.png'" [alt]="track.name" class="track-image">
+          <div class="track-overlay">
+            <button mat-icon-button (click)="playTrack(track)" class="play-button">
+              <mat-icon>play_arrow</mat-icon>
+            </button>
+          </div>
         </div>
+        <div class="track-info">
+          <h3>{{ track.name }}</h3>
+          <p>{{ track.artist_name }}</p>
+        </div>
+        <button mat-icon-button (click)="removeFavorite(track.id)" class="remove-button">
+          <mat-icon>favorite</mat-icon>
+        </button>
       </div>
-      <div class="track-info">
-        <h3>{{ track.name }}</h3>
-        <p>{{ track.artist_name }}</p>
-      </div>
-      <button mat-icon-button (click)="removeFavorite(track.id)" class="remove-button">
-        <mat-icon>favorite</mat-icon>
-      </button>
-    </div>
 
-    <div *ngIf="favoriteTracks.length === 0" class="no-tracks">
-      <mat-icon>favorite_border</mat-icon>
-      <p>No favorite tracks yet</p>
-      <p class="subtitle">Start exploring and like some tracks!</p>
+      <div *ngIf="favoriteTracks.length === 0" class="no-tracks">
+        <mat-icon>favorite_border</mat-icon>
+        <p>No favorite tracks yet</p>
+        <p class="subtitle">Start exploring and like some tracks!</p>
+      </div>
     </div>
   </div>
 </div>
