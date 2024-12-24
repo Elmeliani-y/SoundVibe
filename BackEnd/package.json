@@ -1,14 +1,16 @@
 {
-  "name": "backend",
+  "name": "soundvibe-backend",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "Backend server for SoundVibe music streaming application",
   "dependencies": {
     "axios": "^1.7.9",
     "bcrypt": "^5.1.1",

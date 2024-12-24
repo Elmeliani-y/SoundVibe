@@ -25,6 +25,7 @@ const favArtistSchema = new mongoose.Schema({
 
 const FavArtist = mongoose.model('FavArtist', favArtistSchema);
 
+const userModel = require('../User/connect');
 
 app.use(cors({
     origin: 'http://localhost:4200',
@@ -390,6 +391,93 @@ app.get('/favartists/:userId', async (req, res) => {
             message: 'Error fetching favorite artists',
             error: error.message
         });
+    }
+});
+
+// Get list of artists to discover (excluding user's favorite)
+app.get('/artists/discover', async (req, res) => {
+    try {
+        const response = await axios.get(`${JAMENDO_API_URL}/artists`, {
+            params: {
+                client_id: JAMENDO_CLIENT_ID,
+                format: 'json',
+                limit: 10,
+                orderby: 'joindate_desc' // Get newest artists
+            }
+        });
+        res.json(response.data);
+    } catch (error) {
+        console.error('Error discovering artists:', error);
+        res.status(500).json({ message: 'Error discovering artists' });
+    }
+});
+
+// Get favorite artist's albums
+app.get('/artists/favorite/:userId/albums', async (req, res) => {
+    try {
+        const { userId } = req.params;
+        
+        // Get user's favorite artist from database
+        const user = await userModel.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Check if user has favorite artists or music style
+        if (!user.favArtists?.length && !user.musicStyle) {
+            return res.status(404).json({ message: 'No favorite artists or music style found' });
+        }
+
+        let artistId;
+        let artistName;
+
+        // First try to get a random favorite artist
+        if (user.favArtists?.length > 0) {
+            const randomArtist = user.favArtists[Math.floor(Math.random() * user.favArtists.length)];
+            artistId = randomArtist.artistId;
+            artistName = randomArtist.name;
+        }
+
+        // Get albums based on artist ID or music style
+        const response = await axios.get(`${JAMENDO_API_URL}/albums`, {
+            params: {
+                client_id: JAMENDO_CLIENT_ID,
+                format: 'json',
+                limit: 8,
+                ...(artistId ? { artist_id: artistId } : { tags: user.musicStyle })
+            }
+        });
+
+        // Add artist name to response if we have it
+        if (artistName) {
+            response.data.results = response.data.results.map(album => ({
+                ...album,
+                artist_name: artistName
+            }));
+        }
+
+        res.json(response.data);
+    } catch (error) {
+        console.error('Error fetching favorite artist albums:', error);
+        res.status(500).json({ message: 'Error fetching favorite artist albums' });
+    }
+});
+
+// Get artist details
+app.get('/artists/:artistId', async (req, res) => {
+    try {
+        const { artistId } = req.params;
+        const response = await axios.get(`${JAMENDO_API_URL}/artists`, {
+            params: {
+                client_id: JAMENDO_CLIENT_ID,
+                format: 'json',
+                id: artistId
+            }
+        });
+        res.json(response.data);
+    } catch (error) {
+        console.error('Error fetching artist details:', error);
+        res.status(500).json({ message: 'Error fetching artist details' });
     }
 });
 

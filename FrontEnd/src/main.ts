@@ -6,10 +6,11 @@ import { routes } from './app/app.routes';
 import{  provideHttpClient} from '@angular/common/http';
 
 
+
 bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(routes),
     provideAnimations(),
     provideHttpClient()
   ]
-}).catch(err => console.error(err));
+})

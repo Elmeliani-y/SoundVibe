@@ -6,6 +6,8 @@ const PORT = 3002;
 
 // Enable CORS
 app.use(cors());
+// Enable CORS
+app.use(cors());
 app.use(express.json());
 
 // Sample playlists data

@@ -6,6 +6,7 @@ import { Subject, debounceTime, distinctUntilChanged, takeUntil, finalize } from
 import { SearchService, SearchResult } from '../services/search.service';
 import { ProfileUpdateService } from '../services/profile-update.service';
 import { UserService } from '../services/user.service';
+import { MusicService } from '../services/music.service';
 
 @Component({
   selector: 'app-navbar',
@@ -31,7 +32,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
     private searchService: SearchService,
     private router: Router,
     private profileUpdateService: ProfileUpdateService,
-    private userService: UserService
+    private userService: UserService,
+    private musicService: MusicService
   ) {}
 
   ngOnInit() {
@@ -116,18 +118,31 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   selectResult(result: SearchResult) {
-    this.showResults = false;
-    this.searchQuery = '';
-    
-    switch (result.type) {
-      case 'artist':
-        this.router.navigate(['/artist', result.id]);
-        break;
-      case 'track':
-        this.router.navigate(['/track', result.id]);
-        break;
-      default:
-        console.error('Unknown result type:', result.type);
+    if (result.type === 'track') {
+      // Convert SearchResult to Track format
+      const track = {
+        id: result.id,
+        name: result.name,
+        artist_name: result.artist_name || 'Unknown Artist',
+        image: result.imageUrl,
+        audio_url: `https://mp3d.jamendo.com/download/track/${result.id}/mp32`
+      };
+      
+      // Play the track
+      this.musicService.playTrack(track);
+      this.showResults = false; // Hide search results after selection
+      this.searchQuery = ''; // Clear search query
+    } else {
+      this.showResults = false;
+      this.searchQuery = '';
+      
+      switch (result.type) {
+        case 'artist':
+          this.router.navigate(['/artist', result.id]);
+          break;
+        default:
+          console.error('Unknown result type:', result.type);
+      }
     }
   }
 
