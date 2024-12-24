@@ -9,11 +9,20 @@ export interface Track {
   genre?: string;
   image?: string;
   audio_url?: string;
+  lyrics?: string;
+  isLiked?: boolean;
 }
 
 interface AudioError extends Error {
   name: string;
   message: string;
+}
+
+export interface Playlist {
+  id: string;
+  name: string;
+  tracks: Track[];
+  image?: string;
 }
 
 @Injectable({
@@ -56,6 +65,14 @@ export class MusicService {
 
   searchTracks(name: string): Observable<any> {
     return this.http.get(`${this.API_URL}/search/${name}`);
+  }
+
+  getTrackById(id: string): Observable<Track> {
+    return this.http.get<Track>(`${this.API_URL}/track/${id}`);
+  }
+
+  getLyrics(trackId: string): Observable<string> {
+    return this.http.get<string>(`${this.API_URL}/lyrics/${trackId}`);
   }
 
   async playTrack(track: Track) {
@@ -162,5 +179,25 @@ export class MusicService {
       this.currentTrackIndex = this.playlist.length - 1;
     }
     await this.playTrack(this.playlist[this.currentTrackIndex]);
+  }
+
+  likeTrack(trackId: string): Observable<{ success: boolean }> {
+    return this.http.post<{ success: boolean }>(`${this.API_URL}/like/${trackId}`, {});
+  }
+
+  unlikeTrack(trackId: string): Observable<{ success: boolean }> {
+    return this.http.delete<{ success: boolean }>(`${this.API_URL}/like/${trackId}`);
+  }
+
+  getUserPlaylists(): Observable<Playlist[]> {
+    return this.http.get<Playlist[]>(`${this.API_URL}/playlists`);
+  }
+
+  addToPlaylist(playlistId: string, trackId: string): Observable<{ success: boolean }> {
+    return this.http.post<{ success: boolean }>(`${this.API_URL}/playlist/${playlistId}/add`, { trackId });
+  }
+
+  createPlaylist(name: string): Observable<Playlist> {
+    return this.http.post<Playlist>(`${this.API_URL}/playlist/create`, { name });
   }
 }

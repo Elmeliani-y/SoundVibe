@@ -7,15 +7,12 @@ import { HomeAppComponent } from './home-app/home-app.component';
 import { ProfileComponent } from './profile/profile.component';
 
 export const routes: Routes = [
-
   { path: '', redirectTo:'sign-up', pathMatch: 'full' },
   {
     path: 'sign-up',
     component: SignUpComponent,
     title: 'Sign Up'
   },
-
-  
   {
     path:'choose-artist',
     component:ChooseArtistComponent,
@@ -26,10 +23,9 @@ export const routes: Routes = [
     component: HomeAppComponent, 
     title: 'home',
   },
-    
-  { path: 'login',
-     component: LoginComponent
-    
+  { 
+    path: 'login',
+    component: LoginComponent
   },
   { path: 'explore', component: ExploreComponent },
   {
@@ -41,5 +37,4 @@ export const routes: Routes = [
     redirectTo: 'profile/user1',
     pathMatch: 'full'
   },
- 
 ];

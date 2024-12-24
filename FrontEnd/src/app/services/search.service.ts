@@ -8,6 +8,7 @@ export interface SearchResult {
   name: string;
   type: 'artist' | 'track';
   imageUrl?: string;
+  artist_name?: string;
 }
 
 // Jamendo API Track interface
@@ -64,7 +65,8 @@ export class SearchService {
             id: track.id,
             name: track.name,
             type: 'track' as const,
-            imageUrl: track.image || 'default-track-image-url'
+            imageUrl: track.image || 'default-track-image-url',
+            artist_name: track.artist_name
           })));
         }
 
