@@ -1,0 +1,80 @@
+<div class="playlist-details" *ngIf="!loading && !error && playlist">
+    <div class="playlist-header">
+        <img [src]="playlist.image" [alt]="playlist.name" class="playlist-cover">
+        <div class="playlist-info">
+            <h1>{{ playlist.name }}</h1>
+            <p class="description">{{ playlist.description }}</p>
+            <div class="playlist-stats">
+                <span>{{ playlist.tracks.length }} songs</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="tracks-list">
+        <div class="tracks-header">
+            <div class="track-number">#</div>
+            <div class="track-info">Title & Artist</div>
+            <div class="track-genre">Genre</div>
+            <div class="track-duration">Duration</div>
+            <div class="track-actions"></div>
+        </div>
+
+        <div class="track-item" *ngFor="let track of playlist.tracks; let i = index" 
+             [class.playing]="currentTrack?.id === track.id"
+             (click)="playTrack(track)">
+            <div class="track-number">{{ i + 1 }}</div>
+            <div class="track-info">
+                <div class="track-title">{{ track.name }}</div>
+                <div class="track-artist">{{ track.artist }}</div>
+            </div>
+            <div class="track-genre">{{ track.genre }}</div>
+            <div class="track-duration">{{ track.duration }}</div>
+            <div class="track-actions">
+                <button class="play-button" (click)="playTrack(track); $event.stopPropagation()">
+                    <i class="fas" [class.fa-play]="currentTrack?.id !== track.id" [class.fa-pause]="currentTrack?.id === track.id"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="audio-player" *ngIf="currentTrack">
+        <audio #audioPlayer 
+               [src]="currentTrack.audioUrl" 
+               (ended)="onTrackEnded()"
+               (timeupdate)="onTimeUpdate($event)">
+        </audio>
+        <div class="player-controls">
+            <div class="now-playing">
+                <img [src]="currentTrack.image" [alt]="currentTrack.name" class="track-thumbnail">
+                <div class="track-info">
+                    <div class="track-title">{{ currentTrack.name }}</div>
+                    <div class="track-artist">{{ currentTrack.artist }}</div>
+                </div>
+            </div>
+            <div class="playback-controls">
+                <button class="control-button" (click)="previousTrack()">
+                    <i class="fas fa-step-backward"></i>
+                </button>
+                <button class="control-button play-pause" (click)="togglePlay()">
+                    <i class="fas" [class.fa-play]="!isPlaying" [class.fa-pause]="isPlaying"></i>
+                </button>
+                <button class="control-button" (click)="nextTrack()">
+                    <i class="fas fa-step-forward"></i>
+                </button>
+            </div>
+            <div class="progress-bar">
+                <div class="progress" [style.width.%]="progress"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading playlist...</p>
+</div>
+
+<div *ngIf="error" class="error-state">
+    <p>{{ error }}</p>
+    <button (click)="loadPlaylist(playlist?.id)" class="retry-button">Try Again</button>
+</div>
