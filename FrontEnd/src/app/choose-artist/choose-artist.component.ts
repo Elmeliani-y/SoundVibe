@@ -134,8 +134,8 @@ export class ChooseArtistComponent implements OnInit {
             verticalPosition: 'top'
           });
 
-          // Navigate to the home-app page
-          this.router.navigate(['/app-home']);
+          // Navigate to the home-app page with the correct route
+          this.router.navigate(['/home-app']);
         },
         error: (error) => {
           console.error('Error saving favorite artists:', error);

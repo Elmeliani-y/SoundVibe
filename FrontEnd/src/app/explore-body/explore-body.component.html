@@ -9,19 +9,7 @@
     <!-- Albums Section -->
     <section class="albums-section">
         
-        <div class="section-header">
-            <div class="header-controls">
-                <button class="voir-tout" (click)="navigateToAllAlbums()"></button>
-                <div class="nav-buttons">
-                    <button class="nav-btn prev" (click)="scrollAlbums('left')">
-                        <i class="fas fa-chevron-left" style="color: #db92e4;"></i>
-                    </button>
-                    <button class="nav-btn next" (click)="scrollAlbums('right')">
-                        <i class="fas fa-chevron-right" style="color: #db92e4;"></i>
-                    </button>                
-                </div>
-            </div>
-        </div>
+       >
 
         <!-- Loading State -->
         <div *ngIf="loading" class="loading-state">
