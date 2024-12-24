@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const axios = require('axios');
 const Playlist = require('./connect');
 const verifyJWT = require('../User/middlewear/index');
+const cors = require('cors');
 
 dotenv.config();
 
@@ -11,6 +12,8 @@ const app = express();
 const PORT = process.env.PORT3 || 3002 ;
 const JAMENDO_API_URL = 'https://api.jamendo.com/v3.0';
 
+// Enable CORS
+app.use(cors());
 app.use(express.json());
 app.use(
     session({
@@ -36,21 +39,27 @@ app.get('/playlists-Api', verifyJWT, async (req, res) => {
     }
 });
 
-app.get('/playlists-user', verifyJWT, async (req, res) => {
+app.get('/playlists-user', async (req, res) => {
     try {
-        const playlists = await Playlist.find({ owner: req.user.id });
+        // For testing, use a default user ID
+        const userId = 'user1';
+        const playlists = await Playlist.find({ owner: userId });
         res.json(playlists);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching playlists' });
     }
 });
-app.post('/playlists/new-pl', verifyJWT, async (req, res) => {
-    const { name, description} = req.body;
+
+app.post('/playlists/new-pl', async (req, res) => {
+    const { name, description } = req.body;
     try {
+        // For testing, use a default user ID
+        const userId = 'user1';
         const newPlaylist = new Playlist({
             name,
             description,
-            owner: req.user.id
+            owner: userId,
+            tracks: []
         });
         await newPlaylist.save();
         res.status(201).json(newPlaylist);
@@ -74,22 +83,37 @@ app.get('/playlists/:playlistId', verifyJWT, async (req, res) => {
         res.status(500).json({ message: 'Error fetching playlist' });
     }
 }); 
-app.post('/playlists/:playlistId/add-songs', verifyJWT, async (req, res) => {
+
+app.post('/playlists/:playlistId/tracks', async (req, res) => {
     const { playlistId } = req.params;
-    const { songId } = req.body;
+    const { trackId } = req.body;
     try {
         const playlist = await Playlist.findById(playlistId);
         if (!playlist) {
             return res.status(404).json({ message: 'Playlist not found' });
         }
-        if (playlist.owner !== req.user.id && !playlist.collaborators.includes(req.user.id)) {
-            return res.status(403).json({ message: 'You do not have permission to add songs to this playlist' });
+        
+        if (!playlist.tracks.includes(trackId)) {
+            playlist.tracks.push(trackId);
+            await playlist.save();
         }
-        playlist.tracks.push(songId);
-        await playlist.save();
-        res.json({ message: 'Song added to playlist', playlist });
+        
+        res.json(playlist);
     } catch (error) {
-        res.status(500).json({ message: 'Error adding song to playlist' });
+        res.status(500).json({ message: 'Error adding track to playlist' });
+    }
+});
+
+app.get('/playlists/check-track/:trackId', async (req, res) => {
+    const { trackId } = req.params;
+    try {
+        // For testing, use a default user ID
+        const userId = 'user1';
+        const playlists = await Playlist.find({ owner: userId });
+        const isInPlaylist = playlists.some(playlist => playlist.tracks.includes(trackId));
+        res.json(isInPlaylist);
+    } catch (error) {
+        res.status(500).json({ message: 'Error checking track in playlists' });
     }
 });
 

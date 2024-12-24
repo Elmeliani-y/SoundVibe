@@ -163,3 +163,73 @@
 button.active {
   background: transparent !important;
 }
+
+/* Playlist Menu Styles */
+.playlist-menu {
+  position: fixed;
+  background: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  min-width: 200px;
+  z-index: 1000;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.menu-header h4 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.menu-header button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.playlist-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.playlist-item {
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.playlist-item:hover {
+  background-color: #f5f5f5;
+}
+
+.no-playlists {
+  padding: 16px;
+  text-align: center;
+  color: #666;
+}
+
+/* Control button styles */
+.control-buttons button {
+  margin: 0 4px;
+  padding: 8px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.control-buttons button:hover {
+  color: #cb6ce6;
+}
+
+.control-buttons button.active {
+  color: #cb6ce6;
+}
