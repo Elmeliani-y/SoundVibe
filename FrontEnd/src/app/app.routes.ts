@@ -6,6 +6,7 @@ import { ExploreComponent } from './explore/explore.component';
 import { HomeAppComponent } from './home-app/home-app.component';
 import { ProfileComponent } from './profile/profile.component';
 import { AlbumDetailsComponent } from './album-details/album-details.component';
+import {FavoritesComponent} from './favorites/favorites.component'
 
 export const routes: Routes = [
   { path: '', redirectTo:'sign-up', pathMatch: 'full' },
@@ -40,6 +41,10 @@ export const routes: Routes = [
   {
     path: 'profile/:userId',
     component: ProfileComponent
+  },
+  {
+    path: 'favorites',
+    component: FavoritesComponent
   },
   {
     path: 'profile',

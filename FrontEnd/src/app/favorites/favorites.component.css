@@ -1,0 +1,291 @@
+.favorites-container {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  margin-left: 250px;
+  margin-top: 90px;
+  margin-bottom: 100px; /* Space for music player */
+}
+
+.header {
+  margin-bottom: 24px;
+}
+
+.header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  padding: 40px;
+}
+
+.error-message {
+  color: #f44336;
+  text-align: center;
+  padding: 20px;
+  background: rgba(244, 67, 54, 0.1);
+  border-radius: 8px;
+  margin: 20px 0;
+}
+
+.progress-bar-container {
+  width: 100%;
+  padding: 0 20px;
+  margin-bottom: 20px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 0px;
+  background: #282828;
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-thumb {
+  position: absolute;
+  height: 100%;
+  background: #cb6ce6;
+  width: 0;
+  transition: width 0.1s ease;
+  border-radius: 2px;
+}
+
+.tracks-section {
+  width: 100%;
+  overflow: hidden;
+}
+
+.tracks-row {
+  display: flex;
+  gap: 24px;
+  padding: 10px 0;
+  overflow-x: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.tracks-row::-webkit-scrollbar {
+  display: none;
+}
+
+.track-card {
+  flex: 0 0 200px;
+  background: #282828;
+  border-radius: 8px;
+  padding: 10px;
+  transition: background-color 0.3s ease;
+  position: relative;
+  height: 300px;
+}
+
+.track-card:hover {
+  background: #333333;
+}
+
+.track-image-container {
+  position: relative;
+  width: 100%;
+  padding-top: 100%;
+  margin-bottom: 16px;
+}
+
+.track-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.track-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: 4px;
+}
+
+.track-card:hover .track-overlay {
+  opacity: 1;
+}
+
+.play-button {
+  background: #cb6ce6;
+  transform: scale(1.2);
+}
+
+.play-button:hover {
+  background: #cb6ce6;
+  transform: scale(1.3);
+}
+
+.track-info {
+  padding: 8px 0;
+}
+
+.track-info h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.track-info p {
+  margin: 4px 0 0;
+  color: #b3b3b3;
+  font-size: 0.875rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.remove-button {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  color: #cb6ce6;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 2;
+}
+
+.remove-button:hover {
+  color: #cb6ce6;
+}
+
+.no-tracks {
+  flex: 1;
+  text-align: center;
+  padding: 60px 20px;
+  background: #282828;
+  border-radius: 8px;
+  color: #b3b3b3;
+  min-width: 300px;
+}
+
+.no-tracks mat-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 16px;
+  color: #cb6ce6;
+}
+
+.no-tracks p {
+  margin: 8px 0;
+  font-size: 1.1rem;
+  color: #ffffff;
+}
+
+.no-tracks .subtitle {
+  color: #b3b3b3;
+  font-size: 0.9rem;
+}
+
+.artists-section {
+  width: 100%;
+  overflow: hidden;
+  margin-bottom: 40px;
+}
+
+.artists-row {
+  display: flex;
+  gap: 24px;
+  padding: 10px 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.artists-row::-webkit-scrollbar {
+  display: none;
+}
+
+.artist-card {
+  flex: 0 0 auto;
+  width: 200px;
+  text-align: center;
+  transition: transform 0.2s;
+  padding: 16px;
+}
+
+.artist-card:hover {
+  transform: translateY(-5px);
+}
+
+.artist-image-container {
+  width: 200px;
+  height: 200px;
+  margin: 0 auto 16px;
+  position: relative;
+}
+
+.artist-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #C969E6;
+}
+
+.artist-info {
+  padding: 8px 0;
+}
+
+.artist-info h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 4px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.artist-info p {
+  color: #b3b3b3;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+app-music-player {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: #181818;
+}
+
+@media (max-width: 768px) {
+  .favorites-container {
+    padding: 16px;
+    margin-left: 0;
+  }
+
+  .track-card {
+    flex: 0 0 150px;
+  }
+
+  .header h2 {
+    font-size: 1.25rem;
+  }
+}
